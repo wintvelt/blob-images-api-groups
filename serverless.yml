@@ -14,7 +14,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
-  region: us-central-1
+  region: eu-central-1
   environment:
    SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
