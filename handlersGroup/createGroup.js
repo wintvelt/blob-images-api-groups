@@ -1,11 +1,12 @@
-import { newGroupId } from '../libs/helpers';
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import { newGroupId } from 'blob-common/core/ids';
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb } from "blob-common/core/db";
+import { sanitize } from "blob-common/core/sanitize";
+import { dbItem } from 'blob-common/core/dbCreate';
+import { cleanRecord } from 'blob-common/core/dbClean';
+
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 import { getUser } from "../libs/dynamodb-lib-user";
-import sanitize from 'sanitize-html';
-import { dbItem } from '../libs/dynamodb-create-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
