@@ -1,5 +1,5 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb } from "blob-common/core/db";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
