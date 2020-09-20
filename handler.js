@@ -1,7 +1,4 @@
-import { sleep } from '../common/sleep';
-
 export const hello = async (event, context) => {
-  await sleep(1000);
   return {
     statusCode: 200,
     body: JSON.stringify({
