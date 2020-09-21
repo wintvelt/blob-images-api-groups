@@ -1,8 +1,8 @@
-import dynamoDb from '../libs/dynamodb-lib';
-import { dbCreateItem } from '../libs/dynamodb-create-lib';
+import { dynamoDb } from 'blob-common/core/db';
+import { dbCreateItem } from 'blob-common/core/dbCreate';
 
 const testUserCognitoId = 'eu-central:test-user';
-export const testUserId = 'U'+'normal-test-id';
+export const testUserId = 'U' + 'normal-test-id';
 export const testGroupId = 'Gtestgroup-1';
 export const testAlbumId = 'Atestalbum-1';
 export const testPhotoId = 'Ptestphoto-1';

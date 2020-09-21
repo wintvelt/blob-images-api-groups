@@ -1,11 +1,12 @@
-import { dynamoDb } from 'blob-common/core/sleep';
-import { eventContext, testUserId, testUser, testPhotoId, setUp, cleanUp, testAlbumId } from '../context';
-import { main as createGroup } from '../../handlersGroup/createGroup';
-import { main as updateGroup } from '../../handlersGroup/updateGroup';
-import { main as listGroups } from '../../handlersGroup/listGroups';
-import { main as listMembers } from '../../handlersGroup/listMembers';
-import { main as updateMembership } from '../../handlersGroup/updateMembership';
-import { getMember } from '../../libs/dynamodb-lib-single';
+import { dynamoDb } from 'blob-common/core/db';
+import { sleep } from 'blob-common/core/sleep';
+import { eventContext, testUserId, testUser, testPhotoId, setUp, cleanUp, testAlbumId } from './context';
+import { main as createGroup } from '../handlersGroup/createGroup';
+import { main as updateGroup } from '../handlersGroup/updateGroup';
+import { main as listGroups } from '../handlersGroup/listGroups';
+import { main as listMembers } from '../handlersGroup/listMembers';
+import { main as updateMembership } from '../handlersGroup/updateMembership';
+import { getMember } from '../libs/dynamodb-lib-single';
 
 const TIMEOUT = 4000;
 
@@ -21,7 +22,7 @@ const testGroup2Name = 'ANOTHER TEST GROUP';
 // will be created in test
 let testGroup2Id = 'empty';
 
-const testUser2Id = 'test-user2';
+const testUser2Id = 'Utest-user2';
 const testUser2 = { name: 'another member' };
 
 const recordList = [

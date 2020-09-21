@@ -50,14 +50,6 @@ provider:
       Resource: "arn:aws:s3:::*"
 
 functions:
-  getGroupPhoto:
-    handler: handlersPhoto/getGroupPhoto.main
-    events:
-      - http:
-          path: {id}/albums/{albumid}/photos/{photoid}
-          method: get
-          cors: true
-          authorizer: aws_iam
   createAlbum:
     handler: handlersAlbum/createAlbum.main
     events:

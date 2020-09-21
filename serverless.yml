@@ -106,6 +106,15 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  getGroupPhoto:
+    handler: handlersPhoto/getGroupPhoto.main
+    events:
+      - http:
+          path: {id}/albums/{albumid}/photos/{photoid}
+          method: get
+          cors: true
+          authorizer: aws_iam
+        
                                 
 custom:
   customDomain:
