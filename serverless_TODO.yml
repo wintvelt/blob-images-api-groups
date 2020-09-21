@@ -50,28 +50,12 @@ provider:
       Resource: "arn:aws:s3:::*"
 
 functions:
-  listGroups:
-    handler: handlersGroup/listGroups.main
-    events:
-      - http:
-          path: /
-          method: get
-          cors: true
-          authorizer: aws_iam
   updateGroup:
     handler: handlersGroup/updateGroup.main
     events:
       - http:
           path: {id}
           method: put
-          cors: true
-          authorizer: aws_iam
-  listGroupPhotos:
-    handler: handlersGroup/listGroupPhotos.main
-    events:
-      - http:
-          path: {id}/photos
-          method: get
           cors: true
           authorizer: aws_iam
   listGroupMembers:
