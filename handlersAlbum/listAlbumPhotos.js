@@ -1,5 +1,4 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
-import { dynamoDb } from "blob-common/core/db";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
 import { listAlbumPhotosByDate } from "../libs/dynamodb-query-lib";
 

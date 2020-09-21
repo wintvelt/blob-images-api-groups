@@ -1,4 +1,3 @@
-import { dynamoDb } from "blob-common/core/db";
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
 import { listGroupAlbums, listAlbumPhotosByDate } from "../libs/dynamodb-query-lib";
@@ -13,7 +12,7 @@ export const main = handler(async (event, context) => {
     const photoKeyList = await Promise.all(groupAlbums.map(album => {
         return listAlbumPhotosByDate(groupId, album.id);
     }));
-    const photoKeysFlat = photoKeyList.reduce((acc, keyList) = (
+    const photoKeysFlat = photoKeyList.reduce((acc, keyList) => (
         [...acc, ...keyList]
     ), []);
     return photoKeysFlat;

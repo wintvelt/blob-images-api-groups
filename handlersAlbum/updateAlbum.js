@@ -5,7 +5,7 @@ import { sanitize } from 'blob-common/core/sanitize';
 import { getMemberRole, getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
-    const userId = getUserFromEvent(user);
+    const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     const albumId = event.pathParameters.albumid;
     const data = JSON.parse(event.body);

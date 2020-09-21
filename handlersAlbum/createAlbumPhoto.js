@@ -1,6 +1,6 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dbCreateItem } from "blob-common/core/dbCreate";
 import { getMember, getPhotoByUser } from "../libs/dynamodb-lib-single";
-import { dbCreateItem } from "../libs/dynamodb-create-lib";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -23,7 +23,7 @@ export const main = handler(async (event, context) => {
         SK: foundPhotoId,
         photo,
     };
-    const albumPhoto = await dbCreateItem(Item);
+    await dbCreateItem(Item);
 
     return { status: 'photo added to album' };
 });
