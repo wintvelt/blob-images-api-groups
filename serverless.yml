@@ -106,6 +106,15 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  sendInvite:
+    handler: handlersGroup/sendInvite.main
+    events:
+      - http:
+          path: /{id}/invite
+          method: post
+          cors: true
+          authorizer: aws_iam
+        
   getAlbumPhoto:
     handler: handlersAlbum/getAlbumPhoto.main
     events:
