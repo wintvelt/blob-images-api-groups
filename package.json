@@ -8,8 +8,8 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules\/(?!blob-common)/",
-      "\\.pnp\\.[^\\\/]+$"
+      "/node_modules/(?!blob-common)/",
+      "\\.pnp\\.[^\\/]+$"
     ]
   },
   "author": "Wouter",
