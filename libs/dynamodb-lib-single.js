@@ -17,11 +17,6 @@ export const getMemberRole = async (userId, groupId) => {
     const membership = await getMember(userId, groupId);
     return membership && (membership.status !== 'invite') && membership.role;
 };
-export const checkUser = async (userId, groupId) => {
-    const groupRole = await getMemberRole(userId, groupId);
-    return (!!groupRole);
-};
-
 export const getPhotoByUser = async (photoId, userId) => {
     const params = {
         TableName: process.env.photoTable,
@@ -38,25 +33,6 @@ export const getPhotoByUser = async (photoId, userId) => {
 
     // Return the retrieved item
     return result.Item;
-};
-
-export const getPhotoByGroupAlbum = async (photoId, groupId, albumId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: `GA${groupId}#${albumId}`,
-            SK: photoId,
-        }
-    };
-
-    const result = await dynamoDb.get(params);
-    const photo = result.Item?.photo;
-    if (!photo) {
-        throw new Error("Photo not found.");
-    }
-
-    // Return the retrieved item
-    return photo;
 };
 
 const getGroupId = (key) => key.split('#')[0].slice(2);

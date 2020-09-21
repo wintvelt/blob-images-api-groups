@@ -16,17 +16,5 @@ export const main = handler(async (event, context) => {
     const photoKeysFlat = photoKeyList.reduce((acc, keyList) = (
         [...acc, ...keyList]
     ), []);
-    const groupPhotoItems = await Promise.all(photoKeysFlat.map(keys => (
-        dynamoDb.get({
-            TableName: process.env.photoTable,
-            Key: { PK: keys.PK, SK: keys.SK }
-        })
-    )));
-    if (!groupPhotoItems) throw new Error('group photo retrieval failed');
-
-    const groupPhotos = groupPhotoItems.map(item => ({
-        ...item.Item.photo,
-    }));
-    
-    return groupPhotos;
+    return photoKeysFlat;
 });

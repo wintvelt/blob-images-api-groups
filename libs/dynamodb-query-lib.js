@@ -1,4 +1,4 @@
-import dynamoDb from './dynamodb-lib';
+import { dynamoDb } from 'blob-common/core/db';
 
 export const listPhotosByDate = async (userId) => {
     const params = {
@@ -36,13 +36,8 @@ export const listGroupAlbums = async (groupId, groupRole) => {
         throw new Error("albums retrieval failed.");
     };
     const albums = items.map(item => ({
-        PK: item.PK,
-        SK: item.SK,
-        id: item.SK,
-        name: item.name,
-        image: item.image,
+        ...item,
         userIsAdmin: (groupRole === 'admin'),
-        date: item.createdAt,
     }));
     return albums;
 };
