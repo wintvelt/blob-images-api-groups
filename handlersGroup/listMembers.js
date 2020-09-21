@@ -1,4 +1,4 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
 import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 

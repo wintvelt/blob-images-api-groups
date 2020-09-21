@@ -82,7 +82,31 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-                        
+  listGroupMembers:
+    handler: handlersGroup/listMembers.main
+    events:
+      - http:
+          path: {id}/members
+          method: get
+          cors: true
+          authorizer: aws_iam
+  updateGroup:
+    handler: handlersGroup/updateGroup.main
+    events:
+      - http:
+          path: {id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  updateMembership:
+    handler: handlersGroup/updateMembership.main
+    events:
+      - http:
+          path: {id}/membership/{memberid}
+          method: put
+          cors: true
+          authorizer: aws_iam
+                                
 custom:
   customDomain:
     domainName: 'api.clubalmanac.com' # Change this to your domain.

@@ -1,5 +1,5 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import { dbUpdate } from "../libs/dynamodb-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dbUpdate } from "blob-common/core/db";
 import { getMemberRole, getMember } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {

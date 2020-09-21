@@ -1,8 +1,8 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import { dbUpdateMulti } from "../libs/dynamodb-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dbUpdateMulti } from "blob-common/core/db";
+import { sanitize } from "blob-common/core/sanitize";
+import { cleanRecord } from "blob-common/core/dbClean";
 import { getMemberRole, getPhotoById } from "../libs/dynamodb-lib-single";
-import { sanitize } from "../libs/sanitize";
-import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
