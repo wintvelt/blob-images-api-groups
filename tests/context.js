@@ -26,7 +26,6 @@ export const cleanUp = async (recordList) => {
     for (let i = 0; i < recordList.length; i++) {
         const rec = recordList[i];
         promises.push(dynamoDb.delete({
-            TableName: process.env.photoTable,
             Key: {
                 PK: rec.PK,
                 SK: rec.SK,

@@ -111,7 +111,6 @@ test('Change group name', async () => {
     expect(membership.group.name).toEqual(newGroupName);
 
     const albumResponse = await dynamoDb.get({
-        TableName: process.env.photoTable,
         Key: { PK: 'GA' + testGroupId, SK: testAlbumId }
     });
     expect(albumResponse.Item?.group?.name).toEqual(newGroupName);

@@ -12,11 +12,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: ${opt:stage, 'dev'}
   region: eu-central-1
+  tags:
+    APP: clubalmanac
 
   environment:
-    photoTable: blob-images-photos
+    photoTable: ${file(./serverlessDomainConfig.js):photoTable.${self:provider.stage}}
     coverIndex: cover-idx
     photoIndex: SK-PK-idx
     emailIndex: email-idx
@@ -182,7 +184,7 @@ functions:
                                 
 custom:
   customDomain:
-    domainName: 'api.clubalmanac.com' # Change this to your domain.
+    domainName: ${file(./serverlessDomainConfig.js):domain.${self:provider.stage}}
     basePath: 'groups' # This will be prefixed to all routes
     stage: ${self:provider.stage}
     createRoute53Record: true

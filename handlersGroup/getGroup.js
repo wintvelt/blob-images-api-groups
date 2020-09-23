@@ -7,7 +7,6 @@ export const main = handler(async (event, context) => {
     if (groupId === 'new') return '';
 
     const result = await dynamoDb.get({
-        TableName: process.env.photoTable,
         Key: {
             PK: 'UM' + userId,
             SK: groupId

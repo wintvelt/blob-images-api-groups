@@ -14,7 +14,6 @@ export const main = handler(async (event, context) => {
     if (!userIsAdmin) throw new Error('not authorized to remove photo from album');
 
     const result = await dynamoDb.delete({
-        TableName: process.env.photoTable,
         Key: {
             PK: `GP${groupId}#${albumId}`,
             SK: photoId,

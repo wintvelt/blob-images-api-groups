@@ -13,7 +13,6 @@ export const main = handler(async (event, context) => {
     const userIsAdmin = (memberRole === 'admin');
 
     const params = {
-        TableName: process.env.photoTable,
         Key: {
             PK: 'GA' + groupId,
             SK: albumId,

@@ -2,7 +2,6 @@ import { dynamoDb } from 'blob-common/core/db';
 
 export const getUser = async (userId) => {
     const params = {
-        TableName: process.env.photoTable,
         Key: {
             PK: 'USER',
             SK: userId,

@@ -14,7 +14,6 @@ export const main = handler(async (event, context) => {
 
     // get photo
     const groupPhoto = await dynamoDb.get({
-        TableName: process.env.photoTable,
         Keys: { PK: `GP${groupId}#${albumId}`, SK: photoId }
     });
 

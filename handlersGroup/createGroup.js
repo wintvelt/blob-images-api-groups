@@ -33,13 +33,11 @@ export const main = handler(async (event, context) => {
         TransactItems: [
             {
                 Put: {
-                    TableName: process.env.photoTable,
                     Item: newGroup
                 }
             },
             {
                 Put: {
-                    TableName: process.env.photoTable,
                     Item: dbItem({
                         PK: 'UM' + userId,
                         SK: groupId,

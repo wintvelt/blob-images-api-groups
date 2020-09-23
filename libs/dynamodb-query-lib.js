@@ -2,7 +2,6 @@ import { dynamoDb } from 'blob-common/core/db';
 
 export const listPhotosByDate = async (userId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.dateIndex,
         KeyConditionExpression: "#pk = :pk",
         ExpressionAttributeNames: {
@@ -20,7 +19,6 @@ export const listPhotosByDate = async (userId) => {
 
 export const listGroupAlbums = async (groupId, groupRole) => {
     const params = {
-        TableName: process.env.photoTable,
         KeyConditionExpression: "#g = :g",
         ExpressionAttributeNames: {
             '#g': 'PK',
@@ -44,7 +42,6 @@ export const listGroupAlbums = async (groupId, groupRole) => {
 
 export const listAlbumPhotosByDate = async (groupId, albumId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.dateIndex,
         KeyConditionExpression: "#dPK = :dPK",
         ExpressionAttributeNames: {
@@ -65,7 +62,6 @@ export const listAlbumPhotosByDate = async (groupId, albumId) => {
 
 export const listAlbumPhotos = async (groupId, albumId) => {
     const params = {
-        TableName: process.env.photoTable,
         KeyConditionExpression: "#a = :groupAlbum",
         ExpressionAttributeNames: {
             '#a': 'PK',
@@ -91,7 +87,6 @@ export const listAlbumPhotos = async (groupId, albumId) => {
 
 export const listPhotoRatings = async (photoId) => {
     const params = {
-        TableName: process.env.photoTable,
         KeyConditionExpression: "#pk = :pid",
         ExpressionAttributeNames: {
             '#pk': 'PK',
