@@ -35,10 +35,11 @@ export const main = handler(async (event, context) => {
             getUser(invitedUserKeys.SK)
         ]);
         if (invitedAlreadyInGroup) {
-            if (invitedUser.status !== 'invite') return { status: 'invitee is already member' };
-            const hasActiveInvite = (expireDate(invitedUser.createdAt) > today);
+            if (invitedAlreadyInGroup.status !== 'invite') return { status: 'invitee is already member' };
+            const hasActiveInvite = (expireDate(invitedAlreadyInGroup.createdAt) > today);
             if (hasActiveInvite) return { status: 'invitee already has active invite' };
         };
+        if (!invitee) return { status: 'could find user to invite' };
         invitedUser = invitee;
     };
 
@@ -58,7 +59,7 @@ export const main = handler(async (event, context) => {
         group,
         status: 'invite',
         invitation: {
-            from: user,
+            from: cleanRecord(user),
             message: safeMessage
         },
     });
