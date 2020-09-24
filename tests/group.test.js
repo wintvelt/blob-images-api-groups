@@ -29,7 +29,7 @@ const newGroupName = 'Better named group';
 // });
 
 // GROUP TEST ROUND 2 (NEEDS GroupId from round 1 in context files)
-// test('Invite a user to the group', async () => {
+// test.only('Invite a user to the group', async () => {
 //     const event = eventContext({
 //         pathParameters: { id: testGroupId },
 //         body: {
@@ -37,6 +37,19 @@ const newGroupName = 'Better named group';
 //             toEmail: 'wintvelt@me.com',
 //             message: 'test message',
 //             role: 'guest'
+//         }
+//     });
+//     const response = await sendInvite(event);
+//     expect(response.statusCode).toEqual(200);
+// }, TIMEOUT * 4);
+// test.only('Invite a email to the group', async () => {
+//     const event = eventContext({
+//         pathParameters: { id: testGroupId },
+//         body: {
+//             toName: 'Bas email',
+//             toEmail: 'wouter.intvelt@gmail.com',
+//             message: 'test message',
+//             role: 'admin'
 //         }
 //     });
 //     const response = await sendInvite(event);

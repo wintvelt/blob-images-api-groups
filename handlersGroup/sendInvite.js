@@ -56,7 +56,6 @@ export const main = handler(async (event, context) => {
             email: safeToEmail
         },
         group,
-        comp: role,
         status: 'invite',
         invitation: {
             from: user,
