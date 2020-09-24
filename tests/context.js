@@ -1,9 +1,9 @@
 import { dynamoDb } from 'blob-common/core/db';
 import { dbCreateItem } from 'blob-common/core/dbCreate';
 
-const testUserCognitoId = 'eu-central:test-user';
-export const testUserId = 'U' + 'normal-test-id';
-export const testGroupId = 'Gtestgroup-1';
+const testUserCognitoId = 'eu-central:123456';
+export const testUserId = 'U' + '123normal-test-id123';
+export const testGroupId = 'GsaQFBAI7XisyPzj'; // from test dynamoDb
 export const testAlbumId = 'Atestalbum-1';
 export const testPhotoId = 'Ptestphoto-1';
 

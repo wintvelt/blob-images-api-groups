@@ -42,8 +42,8 @@ export const main = handler(async (event, context) => {
                         PK: 'UM' + userId,
                         SK: groupId,
                         role: 'admin',
-                        user,
-                        group: newGroup,
+                        user: cleanRecord(user),
+                        group: cleanRecord(newGroup),
                     })
                 }
             },

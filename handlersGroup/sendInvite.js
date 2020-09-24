@@ -7,7 +7,7 @@ import { dbCreateItem } from "blob-common/core/dbCreate";
 import { cleanRecord } from "blob-common/core/dbClean";
 
 import { getMember } from "../libs/dynamodb-lib-single";
-import { getUserByEmail } from "../libs/dynamodb-lib-user";
+import { getUser, getUserByEmail } from "../libs/dynamodb-lib-user";
 import { invite } from "../emails/invite";
 
 export const main = handler(async (event, context) => {
@@ -20,20 +20,26 @@ export const main = handler(async (event, context) => {
     const safeMessage = sanitize(message);
     const safeToEmail = sanitize(toEmail.toLowerCase());
 
-    const member = await getMember(userId, groupId);
+    const [member, invitedUserKeys] = await Promise.all([
+        getMember(userId, groupId),
+        getUserByEmail(safeToEmail)
+    ]);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
-
     const { group, user } = member;
     const today = now();
 
-    const invitedUser = await getUserByEmail(safeToEmail);
-    if (invitedUser) {
-        const invitedAlreadyInGroup = await getMember(invitedUser.SK, groupId);
+    let invitedUser;
+    if (invitedUserKeys) {
+        const [invitedAlreadyInGroup, invitee] = await Promise.all([
+            getMember(invitedUserKeys.SK, groupId),
+            getUser(invitedUserKeys.SK)
+        ]);
         if (invitedAlreadyInGroup) {
             if (invitedUser.status !== 'invite') return { status: 'invitee is already member' };
             const hasActiveInvite = (expireDate(invitedUser.createdAt) > today);
             if (hasActiveInvite) return { status: 'invitee already has active invite' };
         };
+        invitedUser = invitee;
     };
 
     const inviteeId = invitedUser ? invitedUser.SK : safeToEmail;
@@ -41,7 +47,7 @@ export const main = handler(async (event, context) => {
         PK: 'UM' + inviteeId,
         SK: groupId
     };
-    const newMembership = await dbCreateItem({
+    const newMembershipPromise = dbCreateItem({
         PK: inviteKey.PK,
         SK: inviteKey.SK,
         role: role || 'guest',
@@ -57,7 +63,6 @@ export const main = handler(async (event, context) => {
             message: safeMessage
         },
     });
-    if (!newMembership) throw new Error('could not create invite');
 
     const url = `${process.env.FRONTEND}/invites/${otob(inviteKey)}`;
     const inviteParams = {
@@ -70,8 +75,8 @@ export const main = handler(async (event, context) => {
         message: safeMessage
     };
     console.log({ inviteParams });
-    const result = await ses.send(invite(inviteParams));
-    if (!result) throw new Error('could not send invite');
+    const inviteMailPromise = ses.send(invite(inviteParams));
+    await Promise.all([newMembershipPromise, inviteMailPromise])
 
     return { status: 'invite sent' };
 });
