@@ -11,21 +11,12 @@ export const main = handler(async (event, context) => {
     const membership = await getMember(userId, groupId);
     if (!membership.role === 'admin') throw new Error('Not authorized to create album');
 
-    const newAlbum = {
-        id: newAlbumId(),
-        name: sanitize(data.name),
-        image: data.image,
-        imageUrl: data.image && data.image.image,
-        group: membership.group,
-    };
-    const albumItem = {
+    let albumItem = {
         PK: 'GA' + groupId,
-        SK: newAlbum.id,
-        name: newAlbum.name,
-        image: newAlbum.image,
-        imageUrl: newAlbum.imageUrl,
+        SK: newAlbumId(),
+        name: sanitize(data.name),
+        photoId: data.photoId,
         group: membership.group,
-        compAfterDate: `${groupId}#${newAlbum.id}`,
     };
 
     const result = await dbCreateItem(albumItem);
