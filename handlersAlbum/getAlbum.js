@@ -1,6 +1,7 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
+import { cleanRecord } from "blob-common/core/dbClean";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -19,8 +20,9 @@ export const main = handler(async (event, context) => {
         }
     };
     const result = await dynamoDb.get(params);
-    if (!result.Item) {
+    const album = result.Item;
+    if (!album) {
         throw new Error("Item not found.");
     }
-    return { ...result.Item, userIsAdmin };
+    return { ...cleanRecord(album), userIsAdmin };
 });

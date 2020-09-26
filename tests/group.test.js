@@ -66,6 +66,16 @@ test('Change group name', async () => {
     expect(group.name).toEqual(newGroupName);
 });
 
+// test.only('Create a new Group', async () => {
+//     const event = eventContext({
+//         body: { ...testGroup }
+//     });
+//     const response = await createGroup(event);
+//     expect(response.statusCode).toEqual(200);
+//     const group = JSON.parse(response.body);
+//     expect(group.name).toEqual(testGroup.name);
+// });
+
 // test('List user groups (memberships)', async () => {
 //     const event = eventContext();
 //     const response = await listGroups(event);

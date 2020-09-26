@@ -1,5 +1,6 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dbCreateItem } from "blob-common/core/dbCreate";
+import { cleanRecord } from "blob-common/core/dbClean";
 import { getMember, getPhotoByUser } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
@@ -21,7 +22,7 @@ export const main = handler(async (event, context) => {
     const Item = {
         PK: `GP${groupId}#${albumId}`,
         SK: foundPhotoId,
-        photo,
+        photo: cleanRecord(photo),
     };
     await dbCreateItem(Item);
 

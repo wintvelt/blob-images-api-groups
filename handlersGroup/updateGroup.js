@@ -2,7 +2,7 @@ import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dbUpdateMulti } from "blob-common/core/db";
 import { sanitize } from "blob-common/core/sanitize";
 import { cleanRecord } from "blob-common/core/dbClean";
-import { getMemberRole, getPhotoById } from "../libs/dynamodb-lib-single";
+import { getMemberRole, getPhotoById, getPhotoByUrl } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -15,12 +15,25 @@ export const main = handler(async (event, context) => {
     let groupUpdate = {};
     if (data.name) groupUpdate.name = sanitize(data.name);
     if (data.description) groupUpdate.description = sanitize(data.description);
-    if (data.photoId) {
-        const photo = await getPhotoById(data.photoId, userId);
-        if (photo) {
-            groupUpdate.photoId = data.photoId;
-            groupUpdate.photo = photo;
+    if (data.hasOwnProperty('photoId')) {
+        if (data.photoId) {
+            const photo = await getPhotoById(data.photoId, userId);
+            if (photo) {
+                groupUpdate.photoId = data.photoId;
+                groupUpdate.photo = cleanRecord(photo);
+            }
+        } else {
+            // clear photo from group
+            groupUpdate.photoId = '';
+            groupUpdate.photo = '';
         }
+    } else if (data.photoFilename) {
+        const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${data.photoFilename}`;
+        const photoFound = await getPhotoByUrl(photoUrl, userId);
+        if (photoFound) {
+            groupUpdate.photoId = photoFound.PK.slice(2);
+            groupUpdate.photo = cleanRecord(photoFound);
+        };
     }
 
     if (Object.keys(groupUpdate).length === 0) return 'ok';

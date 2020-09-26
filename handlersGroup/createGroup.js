@@ -5,7 +5,7 @@ import { sanitize } from "blob-common/core/sanitize";
 import { dbItem } from 'blob-common/core/dbCreate';
 import { cleanRecord } from 'blob-common/core/dbClean';
 
-import { getPhotoById } from "../libs/dynamodb-lib-single";
+import { getPhotoById, getPhotoByUrl } from "../libs/dynamodb-lib-single";
 import { getUser } from "../libs/dynamodb-lib-user";
 
 export const main = handler(async (event, context) => {
@@ -22,11 +22,17 @@ export const main = handler(async (event, context) => {
     });
     if (data.photoId) {
         const photo = await getPhotoById(data.photoId, userId);
-
         if (photo) {
             newGroup.photoId = data.photoId;
-            newGroup.photo = photo;
+            newGroup.photo = cleanRecord(photo);
         }
+    } else if (data.photoFilename) {
+        const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${data.photoFilename}`;
+        const photoFound = await getPhotoByUrl(photoUrl, userId);
+        if (photoFound) {
+            newGroup.photoId = photoFound.PK.slice(2);
+            newGroup.photo = cleanRecord(photoFound);
+        };
     }
 
     const params = {
