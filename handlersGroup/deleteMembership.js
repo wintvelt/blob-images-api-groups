@@ -6,7 +6,6 @@ export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     const memberId = event.pathParameters.memberid;
-    if (userId === memberId) throw new Error('not authorized to update your own membership');
     if (!event.body) throw new Error('bad request - update missing');
     const data = JSON.parse(event.body);
     const { newRole } = data;

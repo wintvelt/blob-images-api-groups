@@ -15,7 +15,7 @@ export const main = handler(async (event, context) => {
     const albums = await listGroupAlbums(groupId, membership.role);
     const albumsWithNewPicsCount = albums.map(album => {
         const newPicsCount = seenPics.filter(pic => (
-            pic.albumPhoto.split('#')[0] === album.SK
+            pic.albumId === album.SK
             && (!pic.seenDate || pic.seenDate === today)
         )).length;
         return { ...album, newPicsCount };

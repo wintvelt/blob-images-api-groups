@@ -108,6 +108,14 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  deleteMembership:
+    handler: handlersGroup/deleteMembership.main
+    events:
+      - http:
+          path: /{id}/membership/{memberid}
+          method: delete
+          cors: true
+          authorizer: aws_iam
   sendInvite:
     handler: handlersGroup/sendInvite.main
     events:
