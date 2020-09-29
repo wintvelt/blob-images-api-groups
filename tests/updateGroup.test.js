@@ -3,7 +3,7 @@ import { main as updateGroup } from '../handlersGroup/updateGroup';
 
 const groupId = 'GsaQFBAI7XisyPzj'; // from testDb
 const groupUpdate = {
-    photoId: ''
+    photoId: 'PdKw6cBAVQsT4Lts'
 };
 
 test.only('Update a  Group', async () => {

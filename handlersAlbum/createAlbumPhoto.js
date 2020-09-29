@@ -23,7 +23,6 @@ export const main = handler(async (event, context) => {
         PK: `GP${groupId}#${albumId}`,
         SK: foundPhotoId,
         photo: cleanRecord(photo),
-        photoId
     };
     await dbCreateItem(Item);
 

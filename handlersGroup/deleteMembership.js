@@ -1,23 +1,32 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
-import { dbUpdate } from "blob-common/core/db";
-import { getMemberRole, getMember } from "../libs/dynamodb-lib-single";
+import { dynamoDb } from "blob-common/core/db";
+import { getMembers } from "../libs/dynamodb-lib-memberships";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     const memberId = event.pathParameters.memberid;
-    if (!event.body) throw new Error('bad request - update missing');
-    const data = JSON.parse(event.body);
-    const { newRole } = data;
 
-    const userRole = await getMemberRole(userId, groupId);
-    if (!userRole === 'admin') throw new Error('not authorized to update membership');
-    if (newRole !== 'admin' && newRole !== 'guest') throw new Error('invalid new role');
+    const groupMembers = await getMembers(groupId);
+    const userMembership = groupMembers.find(mem => (mem.PK.slice(2) === userId));
+    if (!userMembership) throw new Error('not a member of this group');
 
-    const memberToUpdate = await getMember(memberId, groupId);
-    if (!memberToUpdate) throw new Error('member not found in this group');
+    const userIsAdmin = (userMembership.role === 'admin');
+    const userIsLastMember = (groupMembers.length === 1);
+    const isLeavingGroup = (userId === memberId);
+    const hasOtherAdmin = groupMembers.filter(mem => (mem.role === 'admin' && mem.PK.slice(2) !== userId)).length > 0;
 
-    const result = await dbUpdate('UM'+memberId, groupId, 'role', newRole);
-    if (!result.Attributes) throw new Error('membership update failed');
+    if (isLeavingGroup && !userIsLastMember && userIsAdmin && !hasOtherAdmin) {
+        // this is external call, so throw error.
+        throw new Error('as last admin, cannot leave group')
+    };
+    if (!isLeavingGroup && !userIsAdmin) throw new Error('not authorized to delete other member');
+
+    await dynamoDb.delete({
+        Key: {
+            PK: 'UM' + memberId,
+            SK: groupId
+        }
+    });
     return 'ok';
 });
