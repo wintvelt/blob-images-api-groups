@@ -64,7 +64,8 @@ export const main = handler(async (event, context) => {
         },
     });
 
-    const url = `${process.env.FRONTEND}/invites/${otob(inviteKey)}`;
+    const frontEndUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
+    const url = `${frontEndUrl}/invites/${otob(inviteKey)}`;
     const inviteParams = {
         toName,
         toEmail: safeToEmail,

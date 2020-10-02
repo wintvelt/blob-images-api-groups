@@ -25,6 +25,7 @@ provider:
     cognitoIndex: cog-idx
     dateIndex: date-idx
     photoBucket: blob-images
+    frontend: ${file(./serverlessDomainConfig.js):frontend.${self:provider.stage}}
 
   iamRoleStatements:
     - Effect: Allow
