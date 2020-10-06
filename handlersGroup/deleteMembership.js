@@ -18,7 +18,7 @@ export const main = handler(async (event, context) => {
 
     if (isLeavingGroup && !userIsLastMember && userIsAdmin && !hasOtherAdmin) {
         // this is external call, so throw error.
-        throw new Error('as last admin, cannot leave group')
+        throw new Error('as last admin, cannot leave group');
     };
     if (!isLeavingGroup && !userIsAdmin) throw new Error('not authorized to delete other member');
 
