@@ -77,7 +77,7 @@ export const main = handler(async (event, context) => {
     };
     console.log({ inviteParams });
     const inviteMailPromise = ses.send(invite(inviteParams));
-    await Promise.all([newMembershipPromise, inviteMailPromise])
+    await Promise.all([newMembershipPromise, inviteMailPromise]);
 
     return { status: 'invite sent' };
 });
