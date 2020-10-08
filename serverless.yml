@@ -100,6 +100,14 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  deleteGroup:
+    handler: handlersGroup/deleteGroup.main
+    events:
+      - http:
+          path: /{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
   updateMembership:
     handler: handlersGroup/updateMembership.main
     events:
