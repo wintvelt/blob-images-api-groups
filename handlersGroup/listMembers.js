@@ -30,7 +30,8 @@ export const main = handler(async (event, context) => {
 
     return members.sort(compareMembers).map(item => ({
         ...item.user,
-        role: item.role,
+        userRole: item.role,
+        isFounder: item.isFounder,
         status: item.status,
         createdAt: item.createdAt
     }));

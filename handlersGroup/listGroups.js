@@ -9,6 +9,8 @@ export const main = handler(async (event, context) => {
     const groups = items.map(item => ({
         ...item.group,
         userRole: item.role,
+        status: item.status,
+        isFounder: item.isFounder,
         newPicsCount: (item.seenPics) ?
             item.seenPics.filter(item => (!item.seenDate || item.seenDate === today)).length
             : 0,
