@@ -1,11 +1,11 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { now } from "blob-common/core/date";
-import { getMembershipsAndInvites } from "../libs/dynamodb-lib-memberships";
+import { getMemberships } from "../libs/dynamodb-lib-memberships";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const today = now();
-    const items = await getMembershipsAndInvites(userId);
+    const items = await getMemberships(userId);
     const groups = items.map(item => ({
         ...item.group,
         userRole: item.role,
