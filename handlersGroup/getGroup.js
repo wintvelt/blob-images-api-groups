@@ -15,6 +15,7 @@ export const main = handler(async (event, context) => {
     const membership = result.Item;
     if (!membership || membership.status === 'invite') throw new Error('not a member of this group');
     const userRole = membership.role;
+    const isFounder = membership.isFounder;
 
-    return { ...membership.group, userRole };
+    return { ...membership.group, userRole, isFounder };
 });

@@ -48,6 +48,7 @@ export const main = handler(async (event, context) => {
                         PK: 'UM' + userId,
                         SK: groupId,
                         role: 'admin',
+                        isFounder: true,
                         user: cleanRecord(user),
                         group: cleanRecord(newGroup),
                     })
