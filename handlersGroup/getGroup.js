@@ -27,6 +27,6 @@ export const main = handler(async (event, context) => {
         userRole,
         isFounder,
         newPicsCount,
-        createdAt: item.createdAt,
+        createdAt: membership.createdAt,
     };
 });
