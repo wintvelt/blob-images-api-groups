@@ -29,7 +29,7 @@ export const main = handler(async (event, context) => {
     const isAdmin = (groupRole === 'admin');
 
     const members = await getMembersAndInvites(groupId);
-    const hasOtherAdmin = members.find(mem => (mem.user.SK !== userId && mem.role === 'admin'));
+    const hasOtherAdmin = members.find(mem => (mem.user.SK !== userId && mem.role === 'admin' && mem.status !== 'invite'));
 
     return members.sort(compareMembers).map(item => ({
         ...item.user,
