@@ -1,5 +1,5 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
+import { getMember } from "../libs/dynamodb-lib-single";
 import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 
 const compareMembers = (a, b) => {
@@ -23,16 +23,28 @@ const compareMembers = (a, b) => {
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
-    const groupRole = await getMemberRole(userId, groupId);
+    const membership = await getMember(userId, groupId);
+    const groupRole = membership && (membership.status !== 'invite') && membership.role;
     if (!groupRole) throw new Error('no access to group');
+    const isAdmin = (membership.userRole === 'admin');
 
     const members = await getMembersAndInvites(groupId);
+    const hasOtherAdmin = members.find(mem => (mem.user.SK !== userId && mem.userRole === 'admin'));
 
     return members.sort(compareMembers).map(item => ({
         ...item.user,
         userRole: item.role,
         isFounder: item.isFounder,
+        isCurrent: (item.user.SK === userId),
         status: item.status,
+        options: (item.user.SK === userId) ?
+            (hasOtherAdmin) ? ['leave'] : []
+            : (isAdmin && !item.isFounder) ?
+                [
+                    (item.userRole === 'admin') ? 'guestify' : 'adminify',
+                    (item.status === 'invite') ? 'uninvite' : 'ban'
+                ]
+                : [],
         createdAt: item.createdAt
     }));
 });
