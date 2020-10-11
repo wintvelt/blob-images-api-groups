@@ -56,8 +56,8 @@ export const main = handler(async (event, context) => {
 
     const result = await dbUpdateMulti('GBbase', groupId, groupUpdate);
 
-    return cleanRecord(
+    return cleanRecord({
         ...newGroup,
         ...result.Attributes
-    );
+    });
 });
