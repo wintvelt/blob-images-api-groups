@@ -23,8 +23,7 @@ export const main = handler(async (event, context) => {
 
     if (!name && !data.hasOwnProperty('photoId') && !photoFilename) throw new Error('relevant album update details missing');
 
-    const oldAlbumResult = await dynamoDb.get({ Key: { PK: 'GA' + groupId, SK: albumId } });
-    const oldAlbum = oldAlbumResult.Attributes;
+    const oldAlbum = await dynamoDb.get({ Key: { PK: 'GA' + groupId, SK: albumId } });
     if (!oldAlbum) throw new Error('album to update not found');
 
     let albumUpdate = {};
