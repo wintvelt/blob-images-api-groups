@@ -7,7 +7,7 @@ import { now } from "blob-common/core/date";
 
 const today = now();
 const newPicsCount = (albumId, seenPics) => ((seenPics) ?
-    seenPics.filter(item => (!item.seenDate || item.seenDate === today && item.albumId === albumId)).length
+    seenPics.filter(item => ((!item.seenDate || item.seenDate === today) && item.albumId === albumId)).length
     : 0
 );
 
