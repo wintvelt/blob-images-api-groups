@@ -1,8 +1,15 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
-import { dbUpdateMulti } from "blob-common/core/db";
+import { dbUpdateMulti, dynamoDb } from "blob-common/core/db";
 import { cleanRecord } from "blob-common/core/dbClean";
 import { sanitize } from 'blob-common/core/sanitize';
-import { getMemberRole, getPhotoById, getPhotoByUrl } from "../libs/dynamodb-lib-single";
+import { getMember, getPhotoById, getPhotoByUrl } from "../libs/dynamodb-lib-single";
+import { now } from "blob-common/core/date";
+
+const today = now();
+const newPicsCount = (albumId, seenPics) => ((seenPics) ?
+    seenPics.filter(item => (!item.seenDate || item.seenDate === today && item.albumId === albumId)).length
+    : 0
+);
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -11,9 +18,14 @@ export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const { name, photoId, photoFilename } = data;
 
-    const memberRole = await getMemberRole(userId, groupId);
-    if (memberRole !== 'admin') throw new Error('album update not allowed');
+    const membership = await getMember(userId, groupId);
+    if (membership.role !== 'admin' || membership.status === 'invite') throw new Error('album update not allowed');
+
     if (!name && !data.hasOwnProperty('photoId') && !photoFilename) throw new Error('relevant album update details missing');
+
+    const oldAlbumResult = await dynamoDb.get({ Key: { PK: 'GA' + groupId, SK: albumId } });
+    const oldAlbum = oldAlbumResult.Attributes;
+    if (!oldAlbum) throw new Error('album to update not found');
 
     let albumUpdate = {};
     if (name) albumUpdate.name = sanitize(name);
@@ -38,8 +50,16 @@ export const main = handler(async (event, context) => {
         };
     }
 
-    if (Object.keys(albumUpdate).length === 0) return 'ok';
-    await dbUpdateMulti('GA' + groupId, albumId, albumUpdate);
+    const newAlbum = {
+        ...cleanRecord(oldAlbum),
+        newPicsCount: newPicsCount(albumId, membership.seenPics)
+    };
 
-    return { status: 'album updated' };
+    if (Object.keys(albumUpdate).length === 0) return newAlbum;
+    const updateResult = await dbUpdateMulti('GA' + groupId, albumId, albumUpdate);
+
+    return cleanRecord({
+        ...newAlbum,
+        ...updateResult.Attributes
+    });
 });
