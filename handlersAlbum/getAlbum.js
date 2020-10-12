@@ -1,7 +1,14 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
+import { getMember } from "../libs/dynamodb-lib-single";
 import { cleanRecord } from "blob-common/core/dbClean";
+import { now } from "blob-common/core/date";
+
+const today = now();
+const newPicsCount = (albumId, seenPics) => ((seenPics) ?
+    seenPics.filter(item => (!item.seenDate || item.seenDate === today && item.albumId === albumId)).length
+    : 0
+);
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -9,9 +16,9 @@ export const main = handler(async (event, context) => {
     const albumId = event.pathParameters.albumid;
     if (groupId === 'new') return '';
 
-    const memberRole = await getMemberRole(userId, groupId);
-    if (!memberRole) throw new Error('not a member of this group');
-    const userIsAdmin = (memberRole === 'admin');
+    const membership = await getMember(userId, groupId);
+    if (membership.status === 'invite') throw new Error('not a member of this group');
+    const userIsAdmin = (membership.role === 'admin');
 
     const params = {
         Key: {
@@ -24,5 +31,9 @@ export const main = handler(async (event, context) => {
     if (!album) {
         throw new Error("Item not found.");
     }
-    return { ...cleanRecord(album), userIsAdmin };
+    return {
+        ...cleanRecord(album),
+        userIsAdmin,
+        newPicsCount: newPicsCount(albumId, membership.seenPics)
+    };
 });
