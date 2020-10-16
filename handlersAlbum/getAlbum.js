@@ -5,9 +5,10 @@ import { cleanRecord } from "blob-common/core/dbClean";
 import { now } from "blob-common/core/date";
 
 const today = now();
-const newPicsCount = (albumId, seenPics) => ((seenPics) ?
-    seenPics.filter(item => ((!item.seenDate || item.seenDate === today) && item.albumId === albumId)).length
-    : 0
+const getNewPics = (albumId, seenPics = []) => (
+    seenPics
+        .filter(item => (!item.seenDate || item.seenDate === today) && item.albumId === albumId)
+        .map(item => item.photoId)
 );
 
 export const main = handler(async (event, context) => {
@@ -31,9 +32,11 @@ export const main = handler(async (event, context) => {
     if (!album) {
         throw new Error("Item not found.");
     }
+    const newPics = getNewPics(albumId, membership.seenPics);
     return {
         ...cleanRecord(album),
         userIsAdmin,
-        newPicsCount: newPicsCount(albumId, membership.seenPics)
+        newPics,
+        newPicsCount: newPics.length
     };
 });

@@ -173,6 +173,14 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  deleteAlbum:
+    handler: handlersAlbum/deleteAlbum.main
+    events:
+      - http:
+          path: /{id}/albums/{albumid}
+          method: delete
+          cors: true
+          authorizer: aws_iam
   createAlbumPhoto:
     handler: handlersAlbum/createAlbumPhoto.main
     events:
