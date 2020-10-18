@@ -1,48 +1,21 @@
-export const invite = ({toName, toEmail, fromName, groupName, url, expirationDate, message}) => ({
-    Destination: {
-        ToAddresses: [
-            toEmail,
-        ]
-    },
-    Message: {
-        Body: {
-            Html: {
-                Charset: "UTF-8",
-                Data: `<table align="center" cellpadding="8" cellspacing="0 " width="600" style="border-collapse: collapse;">
-                        <tr>
-                            <td>
-                                <h2>Hi ${toName},</h2>
-                                <br/>
-                                ${fromName} has invited you to join "${groupName}" 
-                                on Photo duck<br/>
-                                You can view your invite <a href=${url}>here</a><br/>
-                                <br/>
-                                This invite is valid until ${expirationDate}<br/>
-                                <br/>
-                                ${message.replace(/\n/g,'<br/>')}
-                                <br/>
-                            </td>
-                        </tr>
-                        <tr><td>All the best from the team at <a href="https://photo-duck.com">Photo duck</a>.</td></tr>
-                    </table>
-            `
-            },
-            Text: {
-                Charset: "UTF-8",
-                Data: `Hi ${toName},
-                    ${fromName} has invited you to join "${groupName}" on Photo duck.
-                    Visit ${url} to join!
-                    This invite is valid until ${expirationDate}.
-                    `
-            }
-        },
-        Subject: {
-            Charset: "UTF-8",
-            Data: `${fromName} has invited you to join "${groupName}" on Photo duck.`
-        }
-    },
-    ReplyToAddresses: [
-        "wintvelt@xs4all.nl",
-    ],
-    Source: "wintvelt@xs4all.nl",
-});
+import { inviteMail } from "./emailTemplate";
+import { sesMail } from "./sesMail";
+
+export const invite = ({ toName, toEmail, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => {
+    const niceMail = inviteMail({
+        toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message
+    });
+    const textMail = `Hi ${toName},
+    ${fromName} heeft je uitgenodigd om voor "${groupName}" op clubalmanac.com
+    Bezoek ${inviteUrl} om lid te worden!
+    Deze uitnodiging is geldig tot ${expirationDate}.
+    `;
+    const subject = `${fromName} nodigt je uit om lid te worden van "${groupName}"`;
+    return sesMail({
+        toEmail,
+        fromEmail: 'wouter@clubalmanac.com',
+        subject,
+        data: niceMail,
+        textData: textMail
+    });
+};

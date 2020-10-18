@@ -25,6 +25,7 @@ provider:
     cognitoIndex: cog-idx
     dateIndex: date-idx
     frontend: ${file(./serverlessDomainConfig.js):frontend.${self:provider.stage}}
+    bucket: ${file(./serverlessDomainConfig.js):bucket.${self:provider.stage}}
 
   iamRoleStatements:
     - Effect: Allow

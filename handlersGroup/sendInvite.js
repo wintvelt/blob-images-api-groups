@@ -65,13 +65,14 @@ export const main = handler(async (event, context) => {
     });
 
     const frontEndUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
-    const url = `${frontEndUrl}/invites/${otob(inviteKey)}`;
+    const inviteUrl = `${frontEndUrl}/invites/${otob(inviteKey)}`;
     const inviteParams = {
         toName,
         toEmail: safeToEmail,
         fromName: user.name,
         groupName: group.name,
-        url,
+        photoUrl: group.photo?.url,
+        inviteUrl,
         expirationDate: expireDate(today),
         message: safeMessage
     };

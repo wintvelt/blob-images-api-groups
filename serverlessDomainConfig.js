@@ -12,3 +12,8 @@ module.exports.frontend = () => ({
     'dev': 'http://localhost:3000',
     'prod': 'clubalmanac.com'
 });
+
+module.exports.bucket = () => ({
+    'dev': 'blob-images-dev',
+    'prod': 'blob-images'
+});
