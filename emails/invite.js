@@ -13,7 +13,7 @@ export const invite = ({ toName, toEmail, fromName, groupName, photoUrl, inviteU
     const subject = `${fromName} nodigt je uit om lid te worden van "${groupName}"`;
     return sesMail({
         toEmail,
-        fromEmail: 'wouter@clubalmanac.com',
+        fromEmail: 'clubalmanac <wouter@clubalmanac.com>',
         subject,
         data: niceMail,
         textData: textMail

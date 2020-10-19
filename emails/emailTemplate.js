@@ -1,31 +1,30 @@
-import { part1, part2, part3, part4, part5, part6, part7 } from './emailBlocks';
+import {
+    buttonCell, buttonEscape, dividerCell, emailBody, row, textCell,
+    footerRow, greeting, headerRow, paragraph, photoRow, signatureCell
+} from './emailBlocks';
+import { makeEmailSrc } from './emailHelpers';
 
-const imageBaseUrl = 'https://img.clubalmanac.com/';
-
-const otoa = (object) => Buffer.from(JSON.stringify(object)).toString('base64');
-const makeImageUrl = (key, width, height) => {
-    if (!key) return '';
-    let body = {
-        "bucket": process.env.bucket || process.env.devBucket || 'blob-images-dev',
-        "key": key
-    };
-    if (width || height) {
-        let resize = { "fit": "cover" };
-        if (width) resize.width = width;
-        if (height) resize.height = height;
-        body.edits = { resize };
-    }
-    return imageBaseUrl + otoa(body);
-};
-
-const dividerSrc = makeImageUrl('public/img/invite_divider.png');
+const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
 
 export const inviteMail = ({ toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => (
-    part1 +
-    part2(makeImageUrl('public/img/logo_email_1.png')) +
-    part3(inviteUrl, (photoUrl) ? makeImageUrl(photoUrl, 640, 200) : makeImageUrl('public/img/invite.png')) +
-    part4(toName, fromName, groupName, message, dividerSrc) +
-    part5(inviteUrl) +
-    part6(expirationDate) +
-    part7(makeImageUrl('public/img/signature_wouter.png'), inviteUrl)
+    emailBody([
+        headerRow(makeEmailSrc('public/img/logo_email_1.png')),
+        photoRow((photoUrl) ? makeEmailSrc(photoUrl, 640, 200) : makeEmailSrc('public/img/invite.png'), inviteUrl),
+        row([
+            textCell(greeting(`Hi ${toName}`)),
+            textCell(paragraph(`${fromName} nodigt je uit om lid te worden van <strong><span style="font-size: 16px;">${groupName}</span></strong> op
+            clubalmanac`)),
+            dividerCell(dividerSrc),
+            textCell(paragraph(message.replace(/\n/g, '<br/>'))),
+            dividerCell(dividerSrc),
+            buttonCell('Bekijk uitnodiging', inviteUrl),
+            textCell(buttonEscape(inviteUrl))
+        ]),
+        row([
+            textCell(paragraph(`Deze uitnodiging is geldig tot ${expirationDate}`)),
+            textCell(paragraph('We zien je graag terug op clubalmanac')),
+            signatureCell(makeEmailSrc('public/img/signature_wouter.png'))
+        ]),
+        footerRow
+    ])
 );
