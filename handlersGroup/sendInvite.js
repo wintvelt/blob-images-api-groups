@@ -8,7 +8,7 @@ import { cleanRecord } from "blob-common/core/dbClean";
 
 import { getMember } from "../libs/dynamodb-lib-single";
 import { getUser, getUserByEmail } from "../libs/dynamodb-lib-user";
-import { invite } from "../emails/invite";
+import { inviteBody } from "../emails/invite";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -71,13 +71,33 @@ export const main = handler(async (event, context) => {
         toEmail: safeToEmail,
         fromName: user.name,
         groupName: group.name,
-        photoUrl: group.photo?.url,
         inviteUrl,
-        expirationDate: expireDate(today),
         message: safeMessage
     };
+    const photoUrl = group.photo?.url;
+    const expirationDate = expireDate(today);
+    const niceBody = inviteBody({
+        toName,
+        fromName: user.name,
+        groupName: group.name,
+        photoUrl,
+        inviteUrl,
+        expirationDate,
+        message: safeMessage
+    });
+    const textBody = `Hi ${toName},
+    ${user.name} heeft je uitgenodigd voor "${group.name}" op clubalmanac.com
+    Bezoek ${inviteUrl} om lid te worden!
+    Deze uitnodiging is geldig tot ${expirationDate}.
+    `;;
     console.log({ inviteParams });
-    const inviteMailPromise = ses.send(invite(inviteParams));
+    const inviteMailPromise = ses.sendEmail({
+        toEmail: safeToEmail,
+        fromEmail: 'clubalmanac <wouter@clubalmanac.com>',
+        subject: `${user.name} nodigt je uit om lid te worden van "${group.name}"`,
+        data: niceBody,
+        textData: textBody
+    });
     await Promise.all([newMembershipPromise, inviteMailPromise]);
 
     return { status: 'invite sent' };

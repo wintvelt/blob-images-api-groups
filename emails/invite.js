@@ -1,21 +1,29 @@
-import { inviteMail } from "./emailTemplate";
-import { sesMail } from "./sesMail";
+import {
+    buttonCell, buttonEscape, dividerCell, emailBody, row, textCell,
+    footerRow, greeting, headerRow, paragraph, photoRow, signatureCell, makeEmailSrc
+} from 'blob-common/core/email';
 
-export const invite = ({ toName, toEmail, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => {
-    const niceMail = inviteMail({
-        toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message
-    });
-    const textMail = `Hi ${toName},
-    ${fromName} heeft je uitgenodigd om voor "${groupName}" op clubalmanac.com
-    Bezoek ${inviteUrl} om lid te worden!
-    Deze uitnodiging is geldig tot ${expirationDate}.
-    `;
-    const subject = `${fromName} nodigt je uit om lid te worden van "${groupName}"`;
-    return sesMail({
-        toEmail,
-        fromEmail: 'clubalmanac <wouter@clubalmanac.com>',
-        subject,
-        data: niceMail,
-        textData: textMail
-    });
-};
+const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
+
+export const inviteBody = ({ toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => (
+    emailBody([
+        headerRow(makeEmailSrc('public/img/logo_email_1.png')),
+        photoRow((photoUrl) ? makeEmailSrc(photoUrl, 640, 200) : makeEmailSrc('public/img/invite.png'), inviteUrl),
+        row([
+            textCell(greeting(`Hi ${toName}`)),
+            textCell(paragraph(`${fromName} nodigt je uit om lid te worden van <strong><span style="font-size: 16px;">${groupName}</span></strong> op
+            clubalmanac`)),
+            dividerCell(dividerSrc),
+            textCell(paragraph(message.replace(/\n/g, '<br/>'))),
+            dividerCell(dividerSrc),
+            buttonCell('Bekijk uitnodiging', inviteUrl),
+            textCell(buttonEscape(inviteUrl)),
+        ]),
+        row([
+            textCell(paragraph(`Deze uitnodiging is geldig tot ${expirationDate}`)),
+            textCell(paragraph('We zien je graag terug op clubalmanac')),
+            signatureCell(makeEmailSrc('public/img/signature_wouter.png'))
+        ]),
+        footerRow
+    ])
+);
