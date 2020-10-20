@@ -4,10 +4,11 @@ import {
 } from 'blob-common/core/email';
 
 const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
+const frontEndUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
 
 export const inviteBody = ({ toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => (
     emailBody([
-        headerRow(makeEmailSrc('public/img/logo_email_1.png')),
+        headerRow(makeEmailSrc('public/img/logo_email_1.png'), frontEndUrl),
         photoRow((photoUrl) ? makeEmailSrc(photoUrl, 640, 200) : makeEmailSrc('public/img/invite.png'), inviteUrl),
         row([
             textCell(greeting(`Hi ${toName}`)),
