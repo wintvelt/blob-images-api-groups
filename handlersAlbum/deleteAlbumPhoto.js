@@ -1,6 +1,6 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
+import { getMemberRole, getPhotoByUser } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -11,7 +11,10 @@ export const main = handler(async (event, context) => {
     const memberRole = await getMemberRole(userId, groupId);
     if (!memberRole) throw new Error('not a member of this group');
     const userIsAdmin = (memberRole === 'admin');
-    if (!userIsAdmin) throw new Error('not authorized to remove photo from album');
+    const ownerPhoto = await getPhotoByUser(photoId, userId);
+    const userIsOwner = !!ownerPhoto;
+
+    if (!userIsAdmin && !userIsOwner) throw new Error('not authorized to remove photo from album');
 
     const result = await dynamoDb.delete({
         Key: {
