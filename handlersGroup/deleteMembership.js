@@ -3,6 +3,7 @@ import { dynamoDb } from "blob-common/core/db";
 import { getMembers } from "../libs/dynamodb-lib-memberships";
 import { ses } from "blob-common/core/ses";
 import { banBody } from "../emails/ban";
+import { leaveBody } from "../emails/leave";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -40,17 +41,17 @@ export const main = handler(async (event, context) => {
         toName: member.name,
         toEmail: member.email,
         fromName: user.name,
-        groupName: member.group.name,
+        groupName: userMembership.group.name,
     };
     console.log({ mailParams });
     const niceBody = (isLeavingGroup) ? leaveBody(mailParams) : banBody(mailParams);
     const textBody = (isLeavingGroup) ?
-        `Hi ${mailParams.toName}, je hebt "${group.name}" op clubalmanac.com verlaten. Je foto's zijn uit alle albums daar verwijderd.`
-        : `Hi ${mailParams.toName}, ${mailParams.fromName} je lidmaatschap van "${group.name}" op clubalmanac.com helaas
+        `Hi ${mailParams.toName}, je hebt "${mailParams.groupName}" op clubalmanac.com verlaten. Je foto's zijn uit alle albums daar verwijderd.`
+        : `Hi ${mailParams.toName}, ${mailParams.fromName} je lidmaatschap van "${mailParams.groupName}" op clubalmanac.com helaas
         beëindigd. Jouw (eventuele) foto's zijn uit alle albums verwijderd.`;
     const subject = (isLeavingGroup) ?
-        `Je bent geen lid meer van "${group.name}"`
-        : `${mailParams.fromName} heeft je uit "${group.name}" gezet :(`;
+        `Je bent geen lid meer van "${mailParams.groupName}"`
+        : `${mailParams.fromName} heeft je uit "${mailParams.groupName}" gezet :(`;
 
     const mailPromise = ses.sendEmail({
         toEmail: mailParams.toEmail,
@@ -62,6 +63,6 @@ export const main = handler(async (event, context) => {
     await Promise.all([
         deletePromise,
         mailPromise
-    ])
+    ]);
     return 'ok';
 });
