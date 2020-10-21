@@ -6,13 +6,19 @@ import {
 const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
 const frontEndUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
 
-export const memberUpdateBody = ({ toName, fromName, groupName, photoUrl, groupId, newRole }) => {
+export const memberUpdateBody = ({ toName, fromName, groupName, photoUrl, groupId, newRole, makeFounder }) => {
     const url = `${frontEndUrl}/personal/groups/${groupId}`;
-    const role = (newRole === 'admin') ? 'admin' : 'gast';
-    const explanation = (newRole == 'admin') ?
-        `Dat betekent dat je nu albums kunt toevoegen en bewerken, foto\'s kunt toevoegen<br/>
+    const role = (makeFounder) ?
+        '✨ oprichter ✨'
+        : (newRole === 'admin') ? 'admin' : 'gast';
+    const explanation = (makeFounder) ?
+        `Dat betekent dat je als admin albums kunt toevoegen en bewerken, foto\'s kunt toevoegen<br/>
+    Je kunt ook leden uitnodigen en bewerken, en de groep zelf aanpassen<br/>
+    Belangrijkste is nog wel dat jij de enige bent die eventueel de groep zou kunnen verwijderen`
+        : (newRole == 'admin') ?
+            `Dat betekent dat je nu albums kunt toevoegen en bewerken, foto\'s kunt toevoegen<br/>
     Je kunt ook leden uitnodigen en bewerken, en de groep zelf aanpassen.`
-        : `Dat betekent dat je alles in de groep kunt bekijken, maar dat je geen aanpassingen meer kunt doen<br/>
+            : `Dat betekent dat je alles in de groep kunt bekijken, maar dat je geen aanpassingen meer kunt doen<br/>
     Als je foto\'s had gedeeld, zijn deze verwijderd uit de groep. (Dacht ik?)`;
 
     return emailBody([
@@ -34,14 +40,14 @@ export const memberUpdateBody = ({ toName, fromName, groupName, photoUrl, groupI
     ]);
 };
 
-export const memberUpdateText = ({ toName, fromName, groupName, groupId, newRole }) => {
+export const memberUpdateText = ({ toName, fromName, groupName, groupId, newRole, makeFounder }) => {
     const url = `${frontEndUrl}/personal/groups/${groupId}`;
-    const role = (newRole === 'admin') ? 'admin' : 'gast';
+    const role = (makeFounder) ? '✨ oprichter ✨' : (newRole === 'admin') ? 'admin' : 'gast';
     return `Hi ${toName}, ${fromName} heeft je rechten als lid van "${groupName}" aangepast. 
     Je bent nu (${role}). Graag zien we je snel terug bij clubalmanac op ${url}.`;
 };
 
-export const memberUpdateSubject = ({ fromName, groupName, newRole }) => {
-    const role = (newRole === 'admin') ? 'admin' : 'gast';
+export const memberUpdateSubject = ({ fromName, groupName, newRole, makeFounder }) => {
+    const role = (makeFounder) ? '✨ oprichter ✨' : (newRole === 'admin') ? 'admin' : 'gast';
     return `${fromName} heeft jouw rechten als lid van "${groupName}" aangepast naar (${role})`;
 };

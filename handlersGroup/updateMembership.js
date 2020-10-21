@@ -1,6 +1,6 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
-import { dbUpdate } from "blob-common/core/db";
-import { getMemberRole, getMember } from "../libs/dynamodb-lib-single";
+import { dbUpdate, dbUpdateMulti } from "blob-common/core/db";
+import { getMember } from "../libs/dynamodb-lib-single";
 import { ses } from "blob-common/core/ses";
 import { memberUpdateBody, memberUpdateText, memberUpdateSubject } from "../emails/memberUpdate";
 
@@ -11,20 +11,32 @@ export const main = handler(async (event, context) => {
     if (userId === memberId) throw new Error('not authorized to update your own membership');
     if (!event.body) throw new Error('bad request - update missing');
     const data = JSON.parse(event.body);
-    const { newRole } = data;
+    const { newRole, makeFounder } = data;
 
-    const userRole = await getMemberRole(userId, groupId);
-    if (!userRole === 'admin') throw new Error('not authorized to update membership');
-    if (newRole !== 'admin' && newRole !== 'guest') throw new Error('invalid new role');
+    const userMember = await getMember(userId, groupId);
+    if (!userMember || !userMember.role === 'admin') throw new Error('not authorized to update membership');
+    if (newRole && !['admin', 'guest'].includes(newRole)) throw new Error('invalid new role');
+    if (makeFounder || !user.isFounder) throw new Error('not allowed to transfer foundership');
 
     const memberToUpdate = await getMember(memberId, groupId);
     if (!memberToUpdate) throw new Error('member not found in this group');
 
-    const updatePromise = dbUpdate('UM' + memberId, groupId, 'role', newRole);
+    let promises = [];
+
+    if (makeFounder) {
+        promises.push(dbUpdateMulti('UM' + memberId, groupId, {
+            role: 'admin',
+            isFounder: true
+        }));
+        promises.push(dbUpdateMulti('UM' + userId, groupId, {
+            isFounder: false
+        }));
+    } else {
+        promises.push(dbUpdate('UM' + memberId, groupId, 'role', newRole));
+    }
 
     // send mail to member
     const member = memberToUpdate.user;
-    const userMember = await getMember(userId, groupId);
     const user = userMember.user;
 
     const mailParams = {
@@ -34,7 +46,8 @@ export const main = handler(async (event, context) => {
         groupName: memberToUpdate.group.name,
         groupId: memberToUpdate.SK,
         photoUrl: memberToUpdate.group.photo?.url,
-        newRole
+        newRole,
+        makeFounder
     };
     console.log({ mailParams });
     const niceBody = memberUpdateBody(mailParams);
@@ -48,10 +61,8 @@ export const main = handler(async (event, context) => {
         data: niceBody,
         textData: textBody
     });
+    promises.push(mailPromise);
 
-    await Promise.all([
-        updatePromise,
-        mailPromise
-    ]);
+    await Promise.all(promises);
     return 'ok';
 });
