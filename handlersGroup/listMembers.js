@@ -27,6 +27,7 @@ export const main = handler(async (event, context) => {
     const groupRole = membership && (membership.status !== 'invite') && membership.role;
     if (!groupRole) throw new Error('no access to group');
     const isAdmin = (groupRole === 'admin');
+    const isFounder = membership.isFounder;
 
     const members = await getMembersAndInvites(groupId);
     const hasOtherAdmin = members.find(mem => (mem.user.SK !== userId && mem.role === 'admin' && mem.status !== 'invite'));
@@ -40,13 +41,24 @@ export const main = handler(async (event, context) => {
         isCurrent: (item.user.SK === userId),
         status: item.status,
         options: (item.user.SK === userId) ?
-            (hasOtherAdmin) ? ['leave'] : []
-            : (isAdmin && !item.isFounder) ?
+            // options for user themselves
+            (!isFounder && hasOtherAdmin) ? ['leave'] : []
+            // options for other members
+            : (isFounder && isAdmin && item.status !== ' invite') ?
+                // make other non-invite members founder (only founder can do)
                 [
                     (item.role === 'admin') ? 'guestify' : 'adminify',
-                    (item.status === 'invite') ? 'uninvite' : 'ban'
+                    'founderify',
+                    'ban'
                 ]
-                : [],
+                : (isAdmin && !item.isFounder) ?
+                    // for non-founding admins on other members + invites
+                    [
+                        (item.role === 'admin') ? 'guestify' : 'adminify',
+                        (item.status === 'invite') ? 'uninvite' : 'ban'
+                    ]
+                    // non-admins get no options
+                    : [],
         createdAt: item.createdAt
     }));
 });
