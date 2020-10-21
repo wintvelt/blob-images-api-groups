@@ -16,6 +16,7 @@ export const main = handler(async (event, context) => {
     const user = userMembership.user;
     const deleteMembership = groupMembers.find(mem => (mem.PK.slice(2) === memberId));
     if (!deleteMembership) throw new Error('cannot find member to delete');
+    if (!deleteMembership.isFounder) throw new Error('cannot find remove founder from group');
     const member = deleteMembership.user;
 
     const userIsAdmin = (userMembership.role === 'admin');
