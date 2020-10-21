@@ -19,7 +19,8 @@ export const memberUpdateBody = ({ toName, fromName, groupName, photoUrl, groupI
             `Dat betekent dat je nu albums kunt toevoegen en bewerken, foto\'s kunt toevoegen<br/>
     Je kunt ook leden uitnodigen en bewerken, en de groep zelf aanpassen.`
             : `Dat betekent dat je alles in de groep kunt bekijken, maar dat je geen aanpassingen meer kunt doen<br/>
-    Als je foto\'s had gedeeld, zijn deze verwijderd uit de groep. (Dacht ik?)`;
+    Je foto\'s blijven staan in de albums zolang je lid blijft. Je kunt je eigen foto\'s nog steeds verwijderen uit albums.<br/>
+    Maar je kunt geen nieuwe foto\'s meer aan de groep toevoegen`;
 
     return emailBody([
         headerRow(makeEmailSrc('public/img/logo_email_1.png'), frontEndUrl),
