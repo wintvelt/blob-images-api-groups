@@ -16,7 +16,7 @@ export const main = handler(async (event, context) => {
     const userMember = await getMember(userId, groupId);
     if (!userMember || !userMember.role === 'admin') throw new Error('not authorized to update membership');
     if (newRole && !['admin', 'guest'].includes(newRole)) throw new Error('invalid new role');
-    if (makeFounder || !user.isFounder) throw new Error('not allowed to transfer foundership');
+    if (makeFounder || !userMember.isFounder) throw new Error('not allowed to transfer foundership');
 
     const memberToUpdate = await getMember(memberId, groupId);
     if (!memberToUpdate) throw new Error('member not found in this group');
