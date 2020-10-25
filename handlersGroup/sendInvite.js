@@ -6,9 +6,9 @@ import { sanitize } from 'blob-common/core/sanitize';
 import { dbCreateItem } from "blob-common/core/dbCreate";
 import { cleanRecord } from "blob-common/core/dbClean";
 
-import { getMember } from "../libs/dynamodb-lib-single";
 import { getUser, getUserByEmail } from "../libs/dynamodb-lib-user";
 import { inviteBody } from "../emails/invite";
+import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -20,25 +20,26 @@ export const main = handler(async (event, context) => {
     const safeMessage = sanitize(message);
     const safeToEmail = sanitize(toEmail.toLowerCase());
 
-    const [member, invitedUserKeys] = await Promise.all([
-        getMember(userId, groupId),
+    const [members, invitedUserKeys] = await Promise.all([
+        getMembersAndInvites(groupId),
         getUserByEmail(safeToEmail)
     ]);
+    const member = members.find(mem => (mem.PK.slice(2) === userId && mem.status !== 'invite'));
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
     const { group, user } = member;
-    const today = now();
 
+    if (members.length >= process.env.maxGroupMembers) throw new Error('max group size reached');
+
+    const today = now();
     let invitedUser;
     if (invitedUserKeys) {
-        const [invitedAlreadyInGroup, invitee] = await Promise.all([
-            getMember(invitedUserKeys.SK, groupId),
-            getUser(invitedUserKeys.SK)
-        ]);
+        const invitedAlreadyInGroup = members.find(mem => (mem.PK.slice(2) === invitedUserKeys.SK));
         if (invitedAlreadyInGroup) {
             if (invitedAlreadyInGroup.status !== 'invite') return { status: 'invitee is already member' };
             const hasActiveInvite = (expireDate(invitedAlreadyInGroup.createdAt) > today);
             if (hasActiveInvite) return { status: 'invitee already has active invite' };
         };
+        const invitee = await getUser(invitedUserKeys.SK);
         if (!invitee) return { status: 'could find user to invite' };
         invitedUser = invitee;
     };
