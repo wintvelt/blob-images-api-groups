@@ -1,6 +1,7 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
 import { now } from "blob-common/core/date";
+import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
@@ -22,11 +23,17 @@ export const main = handler(async (event, context) => {
         membership.seenPics.filter(item => (!item.seenDate || item.seenDate === today)).length
         : 0;
 
+    // get no of members and invites too
+    const members = await getMembersAndInvites(groupId);
+    const memberCount = members.length;
+    const mayInvite = (memberCount > process.env.maxGroupMembers);
+
     return {
         ...membership.group,
         userRole,
         isFounder,
         newPicsCount,
+        mayInvite,
         createdAt: membership.createdAt,
     };
 });
