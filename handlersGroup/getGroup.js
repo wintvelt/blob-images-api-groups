@@ -33,6 +33,8 @@ export const main = handler(async (event, context) => {
         userRole,
         isFounder,
         newPicsCount,
+        memberCount,
+        maxMembers: process.env.maxGroupMembers,
         mayInvite,
         createdAt: membership.createdAt,
     };
