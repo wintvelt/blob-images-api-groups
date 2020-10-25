@@ -28,7 +28,8 @@ export const main = handler(async (event, context) => {
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
     const { group, user } = member;
 
-    if (members.length >= process.env.maxGroupMembers) throw new Error('max group size reached');
+    const maxMembers = parseInt(process.env.maxGroupMembers);
+    if (members.length >= maxMembers) throw new Error('max group size reached');
 
     const today = now();
     let invitedUser;

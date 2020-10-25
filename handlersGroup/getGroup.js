@@ -26,7 +26,8 @@ export const main = handler(async (event, context) => {
     // get no of members and invites too
     const members = await getMembersAndInvites(groupId);
     const memberCount = members.length;
-    const mayInvite = (memberCount > process.env.maxGroupMembers);
+    const maxMembers = parseInt(process.env.maxGroupMembers);
+    const mayInvite = (memberCount > maxMembers);
 
     return {
         ...membership.group,
@@ -34,7 +35,7 @@ export const main = handler(async (event, context) => {
         isFounder,
         newPicsCount,
         memberCount,
-        maxMembers: process.env.maxGroupMembers,
+        maxMembers,
         mayInvite,
         createdAt: membership.createdAt,
     };
