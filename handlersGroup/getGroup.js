@@ -27,7 +27,7 @@ export const main = handler(async (event, context) => {
     const members = await getMembersAndInvites(groupId);
     const memberCount = members.length;
     const maxMembers = parseInt(process.env.maxGroupMembers);
-    const mayInvite = (memberCount > maxMembers);
+    const mayInvite = (memberCount < maxMembers);
 
     return {
         ...membership.group,
