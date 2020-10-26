@@ -44,7 +44,7 @@ export const main = handler(async (event, context) => {
             // options for user themselves
             (!isFounder && hasOtherAdmin) ? ['leave'] : []
             // options for other members
-            : (isFounder && isAdmin && item.status !== ' invite') ?
+            : (isFounder && isAdmin && item.status !== 'invite') ?
                 // make other non-invite members founder (only founder can do)
                 [
                     (item.role === 'admin') ? 'guestify' : 'adminify',
