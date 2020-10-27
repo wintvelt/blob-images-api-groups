@@ -1,6 +1,6 @@
 import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
-import { getMembers } from "../libs/dynamodb-lib-memberships";
+import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 import { ses } from "blob-common/core/ses";
 import { banBody } from "../emails/ban";
 import { leaveBody } from "../emails/leave";
@@ -10,7 +10,7 @@ export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
     const memberId = event.pathParameters.memberid;
 
-    const groupMembers = await getMembers(groupId);
+    const groupMembers = await getMembersAndInvites(groupId);
     const userMembership = groupMembers.find(mem => (mem.PK.slice(2) === userId));
     if (!userMembership) throw new Error('not a member of this group');
     const user = userMembership.user;
