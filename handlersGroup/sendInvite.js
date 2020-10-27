@@ -89,9 +89,9 @@ export const main = handler(async (event, context) => {
     });
     const textBody = `Hi ${toName},
     ${user.name} heeft je uitgenodigd voor "${group.name}" op clubalmanac.com
-    Bezoek ${inviteUrl} om lid te worden!
-    Deze uitnodiging is geldig tot ${expirationDate}.
-    `;;
+Bezoek ${inviteUrl} om lid te worden!
+Deze uitnodiging is geldig tot ${expirationDate}.
+`;;
     console.log({ inviteParams });
     const inviteMailPromise = ses.sendEmail({
         toEmail: safeToEmail,

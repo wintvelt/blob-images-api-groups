@@ -3,6 +3,7 @@ import { dynamoDb } from "blob-common/core/db";
 import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 import { ses } from "blob-common/core/ses";
 import { banBody } from "../emails/ban";
+import { uninviteBody } from "../emails/uninvite";
 import { leaveBody } from "../emails/leave";
 
 export const main = handler(async (event, context) => {
@@ -18,6 +19,8 @@ export const main = handler(async (event, context) => {
     if (!deleteMembership) throw new Error('cannot find member to delete');
     if (deleteMembership.isFounder) throw new Error('cannot remove founder from group');
     const member = deleteMembership.user;
+    const deleteIsInvite = (deleteMembership.status === 'invite');
+    const inviteWasToEmail = deleteMembership.PK.includes('@');
 
     const userIsAdmin = (userMembership.role === 'admin');
     const userIsLastMember = (groupMembers.length === 1);
@@ -43,16 +46,24 @@ export const main = handler(async (event, context) => {
         toEmail: member.email,
         fromName: user.name,
         groupName: userMembership.group.name,
+        inviteWasToEmail
     };
     console.log({ mailParams });
-    const niceBody = (isLeavingGroup) ? leaveBody(mailParams) : banBody(mailParams);
+    const niceBody = (isLeavingGroup) ?
+        leaveBody(mailParams)
+        : (deleteIsInvite) ?
+            uninviteBody(mailParams)
+            : banBody(mailParams);
     const textBody = (isLeavingGroup) ?
         `Hi ${mailParams.toName}, je hebt "${mailParams.groupName}" op clubalmanac.com verlaten. Je foto's zijn uit alle albums daar verwijderd.`
-        : `Hi ${mailParams.toName}, ${mailParams.fromName} je lidmaatschap van "${mailParams.groupName}" op clubalmanac.com helaas
-        beëindigd. Jouw (eventuele) foto's zijn uit alle albums verwijderd.`;
+        : (deleteIsInvite) ? `Hi ${mailParams.toName}, ${mailParams.fromName} heeft de uitnodiging om lid te worden van "${mailParams.groupName}"
+op clubalmanac.com helaas ingetrokken.`
+            : `Hi ${mailParams.toName}, ${mailParams.fromName} heeft je lidmaatschap van "${mailParams.groupName}" op clubalmanac.com helaas
+beëindigd. Jouw (eventuele) foto's zijn uit alle albums verwijderd.`;
     const subject = (isLeavingGroup) ?
         `Je bent geen lid meer van "${mailParams.groupName}"`
-        : `${mailParams.fromName} heeft je uit "${mailParams.groupName}" gezet :(`;
+        : (deleteIsInvite) ? `${mailParams.fromName} heeft de uitnodiging voor "${mailParams.groupName}" ingetrokken :(`
+            : `${mailParams.fromName} heeft je uit "${mailParams.groupName}" gezet :(`;
 
     const mailPromise = ses.sendEmail({
         toEmail: mailParams.toEmail,
