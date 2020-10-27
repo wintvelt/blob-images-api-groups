@@ -100,7 +100,8 @@ export const main = handler(async (event, context) => {
         data: niceBody,
         textData: textBody
     });
-    await Promise.all([newMembershipPromise, inviteMailPromise]);
-
+    const results = await Promise.all([newMembershipPromise, inviteMailPromise]);
+    console.log(results);
+    
     return { status: 'invite sent' };
 });
