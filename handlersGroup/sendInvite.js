@@ -102,6 +102,6 @@ export const main = handler(async (event, context) => {
     });
     const results = await Promise.all([newMembershipPromise, inviteMailPromise]);
     console.log(results);
-    
+
     return { status: 'invite sent' };
 });
