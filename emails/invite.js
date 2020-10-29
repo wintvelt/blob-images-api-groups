@@ -12,8 +12,8 @@ export const inviteBody = ({ toName, fromName, groupName, photoUrl, inviteUrl, e
         photoRow((photoUrl) ? makeEmailSrc(photoUrl, 640, 200) : makeEmailSrc('public/img/invite.png'), inviteUrl),
         row([
             textCell(greeting(`Hi ${toName}`)),
-            textCell(paragraph(`${fromName} nodigt je uit om lid te worden van <strong><span style="font-size: 16px;">${groupName}</span></strong> op
-            clubalmanac`)),
+            textCell(paragraph(`${fromName} nodigt je uit om lid te worden van <strong><span style="font-size: 16px;">${groupName}</span></strong> op 
+clubalmanac`)),
             dividerCell(dividerSrc),
             textCell(paragraph(message.replace(/\n/g, '<br/>'))),
             dividerCell(dividerSrc),

@@ -13,10 +13,10 @@ export const banBody = ({ toName, fromName, groupName }) => (
             dividerCell(makeEmailSrc('public/img/banned.png')),
             textCell(greeting(`Hi ${toName}`)),
             textCell(paragraph(`${fromName} heeft je lidmaatschap van <strong><span style="font-size: 16px;">${groupName}</span></strong> 
-            opgezegd<br/>
-            Als je daar foto's had gedeeld, dan zijn deze verwijderd uit de albums van de groep.<br/>
-            Jammer, maar gelukkig ben je nog wel gewoon lid van clubalmanac<br/>
-            Via onderstaande knop kun je je andere groepen bekijken`)),
+opgezegd<br/>
+Als je daar foto's had gedeeld, dan zijn deze verwijderd uit de albums van de groep.<br/>
+Jammer, maar gelukkig ben je nog wel gewoon lid van clubalmanac<br/>
+Via onderstaande knop kun je je andere groepen bekijken`)),
             buttonCell('Bekijk groepen', myGroupsUrl),
             textCell(buttonEscape(myGroupsUrl)),
         ]),

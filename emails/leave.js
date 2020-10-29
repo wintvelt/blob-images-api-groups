@@ -13,10 +13,10 @@ export const leaveBody = ({ toName, groupName }) => (
             dividerCell(makeEmailSrc('public/img/leave_group.png')),
             textCell(greeting(`Hi ${toName}`)),
             textCell(paragraph(`Je hebt je lidmaatschap van <strong><span style="font-size: 16px;">${groupName}</span></strong> 
-            opgezegd<br/>
-            Als je daar foto's had gedeeld, dan zijn deze verwijderd uit de albums van de groep.<br/>
-            Je hebt nu ook geen toegang meer tot de pagina's van ${groupName}<br/>
-            Via onderstaande knop kun je wel je andere groepen bekijken`)),
+opgezegd<br/>
+Als je daar foto's had gedeeld, dan zijn deze verwijderd uit de albums van de groep.<br/>
+Je hebt nu ook geen toegang meer tot de pagina's van ${groupName}<br/>
+Via onderstaande knop kun je wel je andere groepen bekijken`)),
             buttonCell('Bekijk groepen', myGroupsUrl),
             textCell(buttonEscape(myGroupsUrl)),
         ]),
