@@ -9,8 +9,9 @@ const frontEndUrl = process.env.frontend || process.env.devFrontend || 'http://l
 export const inviteBody = ({ toName, fromName, groupName, photoUrl, inviteUrl, expirationDate, message }) => (
     emailBody([
         headerRow(makeEmailSrc('public/img/logo_email_1.png'), frontEndUrl),
-        photoRow((photoUrl) ? makeEmailSrc(photoUrl, 640, 200) : makeEmailSrc('public/img/invite.png'), inviteUrl),
+        (photoUrl)? photoRow(makeEmailSrc(photoUrl, 640, 200), inviteUrl) : '',
         row([
+            (!photoUrl)? dividerCell(makeEmailSrc('public/img/invite.png')) : '',
             textCell(greeting(`Hi ${toName}`)),
             textCell(paragraph(`${fromName} nodigt je uit om lid te worden van <strong><span style="font-size: 16px;">${groupName}</span></strong> op 
 clubalmanac`)),
