@@ -9,8 +9,8 @@ module.exports.photoTable = () => ({
 });
 
 module.exports.frontend = () => ({
-    'dev': 'http://localhost:3000',
-    'prod': 'clubalmanac.com'
+    'dev': 'https://localhost:3000',
+    'prod': 'https://clubalmanac.com'
 });
 
 module.exports.bucket = () => ({
