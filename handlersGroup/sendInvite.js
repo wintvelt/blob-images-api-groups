@@ -76,6 +76,7 @@ export const main = handler(async (event, context) => {
         inviteUrl,
         message: safeMessage
     };
+    console.log(inviteParams);
     const photoUrl = group.photo?.url;
     const expirationDate = expireDate(today);
     const niceBody = inviteBody({
