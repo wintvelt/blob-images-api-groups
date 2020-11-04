@@ -2,14 +2,7 @@ import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { dynamoDb } from "blob-common/core/db";
 import { getMember } from "../libs/dynamodb-lib-single";
 import { cleanRecord } from "blob-common/core/dbClean";
-import { now } from "blob-common/core/date";
-
-const today = now();
-const getNewPics = (albumId, seenPics = []) => (
-    seenPics
-        .filter(item => (!item.seenDate || item.seenDate === today) && item.albumId === albumId)
-        .map(item => item.photoId)
-);
+import { getNewPics } from "../libs/lib-newPics";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
