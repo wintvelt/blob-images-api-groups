@@ -3,6 +3,17 @@ import { getMember } from "../libs/dynamodb-lib-single";
 import { listAlbumPhotosByDate } from "../libs/dynamodb-query-lib";
 import { getNewPics } from "../libs/lib-newPics";
 
+const photoSort = (a, b) => (
+    (a.isNew && !b.isNew) ?
+        -1
+        : (!a.isNew && b.isNew) ?
+            1
+            : (a.createdAt > b.createdAt) ?
+                -1
+                : (a.createdAt < b.createdAt) ? 1
+                    : 0
+);
+
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
@@ -18,5 +29,6 @@ export const main = handler(async (event, context) => {
         isNew: newPics.includes(photo.SK),
         createdAt: photo.dateSK.slice(0,10)
     }));
-    return albumPhotos;
+    const sortedPhotos = albumPhotos.sort(photoSort);
+    return sortedPhotos;
 });
