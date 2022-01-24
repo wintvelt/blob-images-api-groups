@@ -41,7 +41,8 @@ export const main = handler(async (event, context) => {
             albumUpdate.photo = '';
         }
     } else if (photoFilename) {
-        const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${photoFilename}`;
+        // const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${photoFilename}`;
+        const photoUrl = `protected/${userId.slice(1)}/${photoFilename}`;
         const photoFound = await getPhotoByUrl(photoUrl, userId);
         if (photoFound) {
             albumUpdate.photoId = photoFound.PK.slice(2);

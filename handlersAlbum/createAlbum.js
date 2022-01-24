@@ -26,7 +26,8 @@ export const main = handler(async (event, context) => {
             albumItem.photo = cleanRecord(photo);
         }
     } else if (data.photoFilename) {
-        const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${data.photoFilename}`;
+        // const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${data.photoFilename}`;
+        const photoUrl = `protected/${userId.slice(1)}/${data.photoFilename}`;
         const photoFound = await getPhotoByUrl(photoUrl, userId);
         if (photoFound) {
             albumItem.photoId = photoFound.PK.slice(2);
