@@ -14,6 +14,12 @@ const photoSort = (a, b) => (
                     : 0
 );
 
+const makePhotoDate = (photo) => {
+    if (photo.exifDate) return photo.exifDate;
+    if (photo.createdAt) return photo.createdAt;
+    return photo.dateSK.slice(0,10); // should not be necessary
+};
+
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
@@ -27,7 +33,7 @@ export const main = handler(async (event, context) => {
     const albumPhotos = albumPhotoKeys.map(photo => ({
         ...photo,
         isNew: newPics.includes(photo.SK),
-        createdAt: photo.dateSK.slice(0,10)
+        createdAt: makePhotoDate(photo)
     }));
     const sortedPhotos = albumPhotos.sort(photoSort);
     return sortedPhotos;
