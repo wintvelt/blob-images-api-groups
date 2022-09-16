@@ -18,14 +18,14 @@
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
   },
   "devDependencies": {
-    "aws-sdk": "^2.756.0",
-    "serverless-bundle": "^5.2.0",
+    "aws-sdk": "^2.1217.0",
+    "serverless-bundle": "^5.5.0",
     "serverless-dotenv-plugin": "^3.12.2",
-    "serverless-offline": "^8.3.1"
+    "serverless-offline": "^8.8.1"
   },
   "dependencies": {
-    "blob-common": "^1.4.1",
-    "serverless": "^2.72.1",
-    "serverless-domain-manager": "^5.5.0"
+    "blob-common": "^1.4.3",
+    "serverless": "^2.72.3",
+    "serverless-domain-manager": "^5.8.0"
   }
 }
