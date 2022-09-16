@@ -33,7 +33,7 @@ export const main = handler(async (event, context) => {
     const albumPhotos = albumPhotoKeys.map(photo => ({
         ...photo,
         isNew: newPics.includes(photo.SK),
-        createdAt: makePhotoDate(photo)
+        sortDate: makePhotoDate(photo)
     }));
     const sortedPhotos = albumPhotos.sort(photoSort);
     return sortedPhotos;
