@@ -25,7 +25,8 @@ export const main = handler(async (event, context) => {
 
     const albumPhotoKeys = await listAlbumPhotosByDate(groupId, albumId);
     const albumPhotos = albumPhotoKeys.map(photo => ({
-        ...photo,
+        PK: photo.PK,
+        SK: photo.SK,
         isNew: newPics.includes(photo.SK),
         createdAt: photo.dateSK.slice(0,10)
     }));
