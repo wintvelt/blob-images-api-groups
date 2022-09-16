@@ -1,5 +1,4 @@
 service: blob-images-api-groups
-variablesResolutionMode: 20210326
 
 package:
   individually: true
@@ -12,7 +11,6 @@ plugins:
 
 provider:
   name: aws
-  lambdaHashingVersion: 20201221
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   region: eu-central-1
