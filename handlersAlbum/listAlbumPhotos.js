@@ -4,13 +4,13 @@ import { listAlbumPhotosByDate } from "../libs/dynamodb-query-lib";
 import { getNewPics } from "../libs/lib-newPics";
 
 const photoSort = (a, b) => (
-    (a.isNew && !b.isNew) ?
+    (a.sortDate > b.sortDate) ?
         -1
-        : (!a.isNew && b.isNew) ?
-            1
-            : (a.sortDate > b.sortDate) ?
+        : (a.sortDate < b.sortDate) ? 1
+            : (a.isNew && !b.isNew) ?
                 -1
-                : (a.sortDate < b.sortDate) ? 1
+                : (!a.isNew && b.isNew) ?
+                    1
                     : 0
 );
 
@@ -18,7 +18,7 @@ const makePhotoDate = (photo) => {
     if (photo.photo?.exifDate) return photo.photo.exifDate;
     if (photo.photo?.createdAt) return photo.photo.createdAt;
     if (photo.createdAt) return photo.createdAt;
-    return photo.dateSK.slice(0,10); // should not be necessary
+    return photo.dateSK.slice(0, 10); // should not be necessary
 };
 
 export const main = handler(async (event, context) => {
