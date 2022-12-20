@@ -49,7 +49,7 @@ export const main = handler(async (event, context) => {
             albumUpdate.photoId = photoFound.PK.slice(2);
             albumUpdate.photo = cleanRecord(photoFound);
         } else {
-            console.log(`could not find photo at ${photoUrl}`)
+            console.log(`could not find photo at ${photoUrl}`);
         };
     }
 
