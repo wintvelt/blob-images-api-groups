@@ -37,6 +37,7 @@ export const main = handler(async (event, context) => {
             }
         } else {
             // clear photo from album
+            console.log('got empty photoId, clearing photocover from album');
             albumUpdate.photoId = '';
             albumUpdate.photo = '';
         }
@@ -47,6 +48,8 @@ export const main = handler(async (event, context) => {
         if (photoFound) {
             albumUpdate.photoId = photoFound.PK.slice(2);
             albumUpdate.photo = cleanRecord(photoFound);
+        } else {
+            console.log(`could not find photo at ${photoUrl}`)
         };
     }
 
