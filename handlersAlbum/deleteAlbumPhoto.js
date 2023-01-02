@@ -26,5 +26,5 @@ export const main = handler(async (event, context) => {
     console.log(result);
     if (!result.Attributes) throw new Error('could not remove photo from album');
 
-    return { status: 'photo removed from album' };
+    return { status: 'photo removed from album', oldItem: result.Attributes };
 });

@@ -10,6 +10,7 @@ export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
     const data = JSON.parse(event.body);
     const membership = await getMember(userId, groupId);
+    if (!membership) throw new Error(`User membership of group ${groupId} not found`);
     if (!membership.role === 'admin') throw new Error('Not authorized to create album');
 
     let albumItem = {

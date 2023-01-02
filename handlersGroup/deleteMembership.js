@@ -11,6 +11,9 @@ export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
     const memberId = event.pathParameters.memberid;
 
+    const data = (event.body) ? JSON.parse(event.body) : {};
+    const version = data.version || 1;
+
     const groupMembers = await getMembersAndInvites(groupId);
     const userMembership = groupMembers.find(mem => (mem.PK.slice(2) === userId));
     if (!userMembership) throw new Error('not a member of this group');
@@ -37,7 +40,8 @@ export const main = handler(async (event, context) => {
         Key: {
             PK: 'UM' + memberId,
             SK: groupId
-        }
+        },
+        ReturnValues: 'ALL_OLD'
     });
 
     // send mail to member
@@ -72,9 +76,11 @@ beëindigd. Jouw (eventuele) foto's zijn uit alle albums verwijderd.`;
         data: niceBody,
         textData: textBody
     });
-    await Promise.all([
+    const res = await Promise.all([
         deletePromise,
         mailPromise
     ]);
-    return 'ok';
+    return (version > 1) ?
+        res[0].Attributes
+        : 'ok';
 });

@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
     if (userId === memberId) throw new Error('not authorized to update your own membership');
     if (!event.body) throw new Error('bad request - update missing');
     const data = JSON.parse(event.body);
-    const { newRole, makeFounder } = data;
+    const { newRole, makeFounder, version } = data;
 
     const userMember = await getMember(userId, groupId);
     if (!userMember || !userMember.role === 'admin') throw new Error('not authorized to update membership');
@@ -63,6 +63,7 @@ export const main = handler(async (event, context) => {
     });
     promises.push(mailPromise);
 
-    await Promise.all(promises);
-    return 'ok';
+    const res = await Promise.all(promises);
+    return (version > 1) ? res[0].Attributes
+        : 'ok';
 });

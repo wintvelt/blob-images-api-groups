@@ -26,5 +26,5 @@ export const main = handler(async (event, context) => {
     };
     await dbCreateItem(Item);
 
-    return { status: 'photo added to album' };
+    return Item;
 });
