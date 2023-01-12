@@ -36,7 +36,6 @@ export const main = handler(async (event, context) => {
         newPicsCount,
         memberCount,
         maxMembers,
-        mayInvite,
-        createdAt: membership.createdAt,
+        mayInvite
     };
 });

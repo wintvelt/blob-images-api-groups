@@ -14,7 +14,7 @@ export const main = handler(async (event, context) => {
         newPicsCount: (item.seenPics) ?
             item.seenPics.filter(item => (!item.seenDate || item.seenDate === today)).length
             : 0,
-        createdAt: item.createdAt,
+        createdAt: item.group?.createdAt || item.createdAt,
     }));
 
     return groups;

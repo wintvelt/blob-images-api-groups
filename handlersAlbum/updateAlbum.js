@@ -16,18 +16,19 @@ export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
     const albumId = event.pathParameters.albumid;
     const data = JSON.parse(event.body);
-    const { name, photoId, photoFilename } = data;
+    const { name, photoId, photoFilename, createdAt } = data;
 
     const membership = await getMember(userId, groupId);
     if (membership.role !== 'admin' || membership.status === 'invite') throw new Error('album update not allowed');
 
-    if (!name && !data.hasOwnProperty('photoId') && !photoFilename) throw new Error('relevant album update details missing');
+    if (!(name || data.hasOwnProperty('photoId') || photoFilename || createdAt)) throw new Error('relevant album update details missing');
 
     const oldAlbum = await dynamoDb.get({ Key: { PK: 'GA' + groupId, SK: albumId } });
     if (!oldAlbum) throw new Error('album to update not found');
 
     let albumUpdate = {};
     if (name) albumUpdate.name = sanitize(name);
+    if (createdAt) albumUpdate.createdAt = createdAt;
     if (data.hasOwnProperty('photoId')) {
         if (photoId) {
             const photo = await getPhotoById(photoId, userId);
