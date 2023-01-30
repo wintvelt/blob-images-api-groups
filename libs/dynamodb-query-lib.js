@@ -37,7 +37,7 @@ export const listGroupAlbums = async (groupId, groupRole) => {
         ...item,
         userIsAdmin: (groupRole === 'admin'),
     }));
-    return albums;
+    return [...albums].sort((a, b) => (a.createdAt < b.createdAt) ? 1 : (a.createdAt > b.createdAt) ? -1 : 0);
 };
 
 export const listAlbumPhotosByDate = async (groupId, albumId) => {
