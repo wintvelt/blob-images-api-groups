@@ -17,5 +17,5 @@ export const main = handler(async (event, context) => {
         }
     });
 
-    return { status: 'group deleted successfully' };
+    return { status: 'group deleted successfully', groupId, albumId };
 });

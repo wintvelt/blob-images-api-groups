@@ -5,15 +5,14 @@ import { listGroupAlbums, listAlbumPhotosByDate } from "../libs/dynamodb-query-l
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
+    console.log(groupId);
     const groupRole = await getMemberRole(userId, groupId);
     if (!groupRole) throw new Error('no access to this group');
 
     const groupAlbums = await listGroupAlbums(groupId, groupRole);
-    const photoKeyList = await Promise.all(groupAlbums.map(album => {
-        return listAlbumPhotosByDate(groupId, album.id);
+    const photoKeyList = await Promise.all(groupAlbums.map(async (album) => {
+        const albumPhotos = await listAlbumPhotosByDate(groupId, album.SK);
+        return { ...album, data: albumPhotos.map(photo => photo.photo) };
     }));
-    const photoKeysFlat = photoKeyList.reduce((acc, keyList) => (
-        [...acc, ...keyList]
-    ), []);
-    return photoKeysFlat;
+    return photoKeyList;
 });
