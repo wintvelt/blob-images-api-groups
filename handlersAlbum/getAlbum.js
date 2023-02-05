@@ -25,10 +25,16 @@ export const main = handler(async (event, context) => {
     if (!album) {
         throw new Error("Item not found.");
     }
+    let cleanAlbum = {...album};
+    // remove cover photo if flagged
+    if (album.photo && album.photo.flaggedDate) {
+        delete cleanAlbum.photo;
+        if (album.photoId) delete cleanAlbum.photoId;
+    }
     const newPics = getNewPics(albumId, membership.seenPics);
     return {
-        ...cleanRecord(album),
-        sortDate: album.sortDate || album.createdAt,
+        ...cleanRecord(cleanAlbum),
+        sortDate: cleanAlbum.sortDate || cleanAlbum.createdAt,
         userIsAdmin,
         newPics,
         newPicsCount: newPics.length

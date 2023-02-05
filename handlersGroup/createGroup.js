@@ -22,7 +22,7 @@ export const main = handler(async (event, context) => {
     });
     if (data.photoId) {
         const photo = await getPhotoById(data.photoId, userId);
-        if (photo) {
+        if (photo && !photo.flaggedDate) {
             newGroup.photoId = data.photoId;
             newGroup.photo = cleanRecord(photo);
         }
@@ -30,7 +30,7 @@ export const main = handler(async (event, context) => {
         // const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${data.photoFilename}`;
         const photoUrl = `protected/${userId.slice(1)}/${data.photoFilename}`;
         const photoFound = await getPhotoByUrl(photoUrl, userId);
-        if (photoFound) {
+        if (photoFound && !photoFound.flaggedDate) {
             newGroup.photoId = photoFound.PK.slice(2);
             newGroup.photo = cleanRecord(photoFound);
         };

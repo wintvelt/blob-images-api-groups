@@ -29,8 +29,11 @@ export const main = handler(async (event, context) => {
     const maxMembers = parseInt(process.env.maxGroupMembers);
     const mayInvite = (memberCount < maxMembers);
 
+    const { photo, photoId, ...rest} = membership.group;
+    const cleanGroup = (photo?.flaggedDate)? rest : { photo, photoId, ...rest};
+
     return {
-        ...membership.group,
+        ...cleanGroup,
         sortDate: membership.group.sortDate || membership.group.createdAt,
         userRole,
         isFounder,

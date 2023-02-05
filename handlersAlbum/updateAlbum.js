@@ -32,7 +32,7 @@ export const main = handler(async (event, context) => {
     if (data.hasOwnProperty('photoId')) {
         if (photoId) {
             const photo = await getPhotoById(photoId, userId);
-            if (photo) {
+            if (photo && !photo.flaggedDate) {
                 albumUpdate.photoId = photoId;
                 albumUpdate.photo = cleanRecord(photo);
             }
@@ -46,11 +46,11 @@ export const main = handler(async (event, context) => {
         // const photoUrl = `protected/${event.requestContext.identity.cognitoIdentityId}/${photoFilename}`;
         const photoUrl = `protected/${userId.slice(1)}/${photoFilename}`;
         const photoFound = await getPhotoByUrl(photoUrl, userId);
-        if (photoFound) {
+        if (photoFound && !photoFound.flaggedDate) {
             albumUpdate.photoId = photoFound.PK.slice(2);
             albumUpdate.photo = cleanRecord(photoFound);
         } else {
-            console.log(`could not find photo at ${photoUrl}`);
+            console.log(`could not find photo at ${photoUrl}, or photo is flagged`);
         };
     }
 

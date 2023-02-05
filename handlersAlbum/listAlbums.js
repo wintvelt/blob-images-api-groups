@@ -18,7 +18,11 @@ export const main = handler(async (event, context) => {
             pic.albumId === album.SK
             && (!pic.seenDate || pic.seenDate === today)
         )).length;
-        return { ...album, newPicsCount };
+        const { photo, photoId, ...rest } = album;
+        const coverIsFlagged = !!photo?.flaggedDate;
+        return (coverIsFlagged) ?
+            { ...rest, newPicsCount }
+            : { photo, photoId, ...rest, newPicsCount };
     });
 
     return albumsWithNewPicsCount.map(item => cleanRecord(item));

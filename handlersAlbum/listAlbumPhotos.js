@@ -30,12 +30,14 @@ export const main = handler(async (event, context) => {
     if (!member || member.status === 'invite') throw new Error('not a member of this group');
     const newPics = getNewPics(albumId, member.seenPics);
 
-    const albumPhotoKeys = await listAlbumPhotosByDate(groupId, albumId);
-    const albumPhotos = albumPhotoKeys.map(photo => ({
-        ...photo,
-        isNew: newPics.includes(photo.SK),
-        sortDate: makePhotoDate(photo)
-    }));
-    const sortedPhotos = albumPhotos.sort(photoSort);
+    const albumPhotos = await listAlbumPhotosByDate(groupId, albumId);
+    const albumPhotos2 = albumPhotos
+        .filter(photo => (!photo.photo.flaggedDate))
+        .map(photo => ({
+            ...photo,
+            isNew: newPics.includes(photo.SK),
+            sortDate: makePhotoDate(photo)
+        }));
+    const sortedPhotos = [...albumPhotos2].sort(photoSort);
     return sortedPhotos;
 });

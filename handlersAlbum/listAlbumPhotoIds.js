@@ -23,13 +23,15 @@ export const main = handler(async (event, context) => {
     if (!member || member.status === 'invite') throw new Error('not a member of this group');
     const newPics = getNewPics(albumId, member.seenPics);
 
-    const albumPhotoKeys = await listAlbumPhotosByDate(groupId, albumId);
-    const albumPhotos = albumPhotoKeys.map(photo => ({
-        PK: photo.PK,
-        SK: photo.SK,
-        isNew: newPics.includes(photo.SK),
-        createdAt: photo.dateSK.slice(0,10)
-    }));
-    const sortedPhotos = albumPhotos.sort(photoSort);
-    return sortedPhotos;
+    const albumPhotos = await listAlbumPhotosByDate(groupId, albumId);
+    const albumPhotoKeys = albumPhotos
+        .filter(photo => (!photo.photo.flaggedDate))
+        .map(photo => ({
+            PK: photo.PK,
+            SK: photo.SK,
+            isNew: newPics.includes(photo.SK),
+            createdAt: photo.dateSK.slice(0, 10)
+        }));
+    const sortedPhotoKeys = [...albumPhotoKeys].sort(photoSort);
+    return sortedPhotoKeys;
 });

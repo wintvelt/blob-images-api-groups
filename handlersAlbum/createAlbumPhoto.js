@@ -17,6 +17,7 @@ export const main = handler(async (event, context) => {
 
     const photo = await getPhotoByUser(photoId, userId);
     if (!photo) throw new Error('photo not found');
+    if (photo.flaggedDate) throw new Error('photo not available, flagged as inappropriate');
 
     const foundPhotoId = photo.PK.slice(2);
     const Item = {

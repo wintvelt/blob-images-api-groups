@@ -12,7 +12,10 @@ export const main = handler(async (event, context) => {
     const groupAlbums = await listGroupAlbums(groupId, groupRole);
     const photoKeyList = await Promise.all(groupAlbums.map(async (album) => {
         const albumPhotos = await listAlbumPhotosByDate(groupId, album.SK);
-        return { ...album, data: albumPhotos.map(photo => photo.photo) };
+        return {
+            ...album,
+            data: albumPhotos.map(photo => photo.photo).filter(photo => !photo.flaggedDate)
+        };
     }));
     return photoKeyList;
 });
