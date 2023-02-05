@@ -28,6 +28,7 @@ export const main = handler(async (event, context) => {
     const newPics = getNewPics(albumId, membership.seenPics);
     return {
         ...cleanRecord(album),
+        sortDate: album.sortDate || album.createdAt,
         userIsAdmin,
         newPics,
         newPicsCount: newPics.length

@@ -31,6 +31,7 @@ export const main = handler(async (event, context) => {
 
     return {
         ...membership.group,
+        sortDate: membership.group.sortDate || membership.group.createdAt,
         userRole,
         isFounder,
         newPicsCount,

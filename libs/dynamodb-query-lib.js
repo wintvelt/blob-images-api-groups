@@ -35,9 +35,10 @@ export const listGroupAlbums = async (groupId, groupRole) => {
     };
     const albums = items.map(item => ({
         ...item,
+        sortDate: item.sortDate || item.createdAt,
         userIsAdmin: (groupRole === 'admin'),
     }));
-    return [...albums].sort((a, b) => (a.createdAt < b.createdAt) ? 1 : (a.createdAt > b.createdAt) ? -1 : 0);
+    return [...albums].sort((a, b) => (a.sortDate < b.sortDate) ? 1 : (a.sortDate > b.sortDate) ? -1 : 0);
 };
 
 export const listAlbumPhotosByDate = async (groupId, albumId) => {

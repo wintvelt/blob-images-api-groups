@@ -8,6 +8,7 @@ export const main = handler(async (event, context) => {
     const items = await getMemberships(userId);
     const groups = items.map(item => ({
         ...item.group,
+        sortDate: item.group?.sortDate || item.group?.createdAt || item.createdAt,
         userRole: item.role,
         status: item.status,
         isFounder: item.isFounder,
@@ -17,5 +18,5 @@ export const main = handler(async (event, context) => {
         createdAt: item.group?.createdAt || item.createdAt,
     }));
 
-    return groups;
+    return [...groups].sort((a,b) => (a.sortDate < b.sortDate) ? 1 : (a.sortDate > b.sortDate) ? -1 : 0);
 });

@@ -15,7 +15,7 @@ export const main = handler(async (event, context) => {
 
     let groupUpdate = {};
     if (data.name) groupUpdate.name = sanitize(data.name);
-    if (data.createdAt) groupUpdate.createdAt = data.createdAt;
+    if (data.sortdDate) groupUpdate.sortDate = data.sortDate;
     if (data.description) groupUpdate.description = sanitize(data.description);
     if (data.hasOwnProperty('photoId')) {
         if (data.photoId) {
@@ -48,6 +48,7 @@ export const main = handler(async (event, context) => {
 
     const newGroup = {
         ...membership.group,
+        sortDate: membership.group.sortDate || membership.group.createdAt,
         userRole,
         isFounder,
         newPicsCount
