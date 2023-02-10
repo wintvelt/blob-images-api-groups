@@ -16,7 +16,7 @@ export const main = handler(async (event, context) => {
     const groupPhoto = await dynamoDb.get({
         Keys: { PK: `GP${groupId}#${albumId}`, SK: photoId }
     });
-    if (groupPhoto.photo.flaggedDate) throw new Error('photo not available - flagged');
+    // if (groupPhoto.photo.flaggedDate) throw new Error('photo not available - flagged');
 
     // get seenPics from membership
     const userSeenPics = membership.seenPics || [];

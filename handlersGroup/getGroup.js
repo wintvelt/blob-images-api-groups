@@ -30,7 +30,8 @@ export const main = handler(async (event, context) => {
     const mayInvite = (memberCount < maxMembers);
 
     const { photo, photoId, ...rest} = membership.group;
-    const cleanGroup = (photo?.flaggedDate)? rest : { photo, photoId, ...rest};
+    // const cleanGroup = (photo?.flaggedDate)? rest : { photo, photoId, ...rest};
+    const cleanGroup = { photo, photoId, ...rest};
 
     return {
         ...cleanGroup,

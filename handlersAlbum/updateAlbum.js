@@ -32,7 +32,8 @@ export const main = handler(async (event, context) => {
     if (data.hasOwnProperty('photoId')) {
         if (photoId) {
             const photo = await getPhotoById(photoId, userId);
-            if (photo && !photo.flaggedDate) {
+            // /if (photo && !photo.flaggedDate) {
+            if (photo) {
                 albumUpdate.photoId = photoId;
                 albumUpdate.photo = cleanRecord(photo);
             }

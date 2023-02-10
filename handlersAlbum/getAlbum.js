@@ -27,10 +27,10 @@ export const main = handler(async (event, context) => {
     }
     let cleanAlbum = {...album};
     // remove cover photo if flagged
-    if (album.photo && album.photo.flaggedDate) {
-        delete cleanAlbum.photo;
-        if (album.photoId) delete cleanAlbum.photoId;
-    }
+    // if (album.photo && album.photo.flaggedDate) {
+    //     delete cleanAlbum.photo;
+    //     if (album.photoId) delete cleanAlbum.photoId;
+    // }
     const newPics = getNewPics(albumId, membership.seenPics);
     return {
         ...cleanRecord(cleanAlbum),

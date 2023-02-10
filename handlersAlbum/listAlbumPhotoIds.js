@@ -25,7 +25,7 @@ export const main = handler(async (event, context) => {
 
     const albumPhotos = await listAlbumPhotosByDate(groupId, albumId);
     const albumPhotoKeys = albumPhotos
-        .filter(photo => (!photo.photo.flaggedDate))
+        // .filter(photo => (!photo.photo.flaggedDate))
         .map(photo => ({
             PK: photo.PK,
             SK: photo.SK,

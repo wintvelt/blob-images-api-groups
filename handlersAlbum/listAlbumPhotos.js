@@ -32,7 +32,7 @@ export const main = handler(async (event, context) => {
 
     const albumPhotos = await listAlbumPhotosByDate(groupId, albumId);
     const albumPhotos2 = albumPhotos
-        .filter(photo => (!photo.photo.flaggedDate))
+        // .filter(photo => (!photo.photo.flaggedDate))
         .map(photo => ({
             ...photo,
             isNew: newPics.includes(photo.SK),

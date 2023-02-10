@@ -22,7 +22,8 @@ export const main = handler(async (event, context) => {
     });
     if (data.photoId) {
         const photo = await getPhotoById(data.photoId, userId);
-        if (photo && !photo.flaggedDate) {
+        // if (photo && !photo.flaggedDate) {
+        if (photo) {
             newGroup.photoId = data.photoId;
             newGroup.photo = cleanRecord(photo);
         }

@@ -19,7 +19,8 @@ export const main = handler(async (event, context) => {
             && (!pic.seenDate || pic.seenDate === today)
         )).length;
         const { photo, photoId, ...rest } = album;
-        const coverIsFlagged = !!photo?.flaggedDate;
+        // const coverIsFlagged = !!photo?.flaggedDate;
+        const coverIsFlagged = false;
         return (coverIsFlagged) ?
             { ...rest, newPicsCount }
             : { photo, photoId, ...rest, newPicsCount };
